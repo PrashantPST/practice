@@ -104,12 +104,13 @@ public class Util {
 
     // Returns true if the intervals a and b have a common element.
     public static boolean doesIntervalsOverlap(Interval a, Interval b) {
-        return Math.min(a.getEnd(), b.getEnd()) - Math.max(a.getStart(), b.getStart()) >= 0;
+        return Math.min(a.end, b.end) - Math.max(a.start, b.start) >= 0;
     }
 
     public static Interval mergeIntervals(Interval a, Interval b) {
-        return Interval.builder().start(Math.min(a.getStart(), b.getStart())).end(
-                Math.max(a.getEnd(), b.getEnd())).build();
+        int start = Math.min(a.start, b.start);
+        int end = Math.max(a.end, b.end);
+        return new Interval(start, end);
     }
 
     public static int max(Integer... values) {
@@ -129,7 +130,7 @@ public class Util {
         return sums;
     }
 
-    public static boolean isPalindrome(String s, int start, int end) {
+    static boolean isPalindrome(String s, int start, int end) {
         while (start < end) {
             if (s.charAt(start) != s.charAt(end)) {
                 return false;
@@ -140,7 +141,7 @@ public class Util {
         return true;
     }
 
-    public static String buildSubsequnce(int[][] dp, String text) {
+    public static String buildSubsequence(int[][] dp, String text) {
         StringBuilder sb = new StringBuilder();
         int row = dp.length - 1;
         int col = dp[0].length - 1;

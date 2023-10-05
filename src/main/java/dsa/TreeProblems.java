@@ -119,8 +119,8 @@ public class TreeProblems {
             return Collections.emptyList();
         }
         Queue<BinaryTree> queue = new ArrayDeque<>();
-        queue.offer(root); // Use offer() instead of creating an anonymous inner class
-        List<Integer> rightView = new ArrayList<>();
+        queue.offer(root);
+        List<Integer> views = new ArrayList<>();
         while (!queue.isEmpty()) {
             int levelLength = queue.size();
             for (int i = 0; i < levelLength; ++i) {
@@ -128,15 +128,17 @@ public class TreeProblems {
 
                 // If it's the rightmost element
                 if (i == levelLength - 1) {
-                    rightView.add(node.value);
+                    assert node != null;
+                    views.add(node.value);
                 }
                 /*
-                    uncomment below code for left view and comment upper code
+                    uncomment below code and comment upper code for the left view
                     if (i == 0) {
-                        rightView.add(node.value);
+                        views.add(node.value);
                     }
                  */
                 // Add child nodes to the queue
+                assert node != null;
                 if (node.left != null) {
                     queue.offer(node.left);
                 }
@@ -145,7 +147,7 @@ public class TreeProblems {
                 }
             }
         }
-        return rightView;
+        return views;
     }
 
 

@@ -11,6 +11,39 @@ import java.util.PriorityQueue;
 
 public class ArrayProblems {
 
+    private static void transpose(int[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = i + 1; j < matrix[0].length; j++) {
+                matrix[i][j] = matrix[j][i] + matrix[i][j] - (matrix[j][i] = matrix[i][j]);
+            }
+        }
+    }
+
+    /*
+    n: total number of array elements
+    k: number of arrays
+    TC: O(nlogk + k) SC: O(n + k)
+     */
+    public static List<Integer> mergeSortedArrays(List<List<Integer>> arrays) {
+        List<Integer> ans = new ArrayList<>();
+        PriorityQueue<Item> pq = new PriorityQueue<>(Comparator.comparingInt(i -> i.element)
+        );
+        // O(k)
+        for (int i = 0; i < arrays.size(); i++) {
+            pq.add(new Item(arrays.get(i).get(0), i, 1));
+        }
+        // O(nlogk)
+        while (!pq.isEmpty()) {
+            Item top = pq.poll();
+            ans.add(top.element);
+            if (arrays.get(top.from).size() > top.idx) {
+                pq.add(new Item(arrays.get(top.from).get(top.idx), top.from, top.idx + 1
+                ));
+            }
+        }
+        return ans;
+    }
+
     public List<Integer> spiralOrderOfAMatrix(int[][] matrix) {
         List<Integer> result = new ArrayList<>();
         int rows = matrix.length;
@@ -63,16 +96,8 @@ public class ArrayProblems {
         }
     }
 
-    private static void transpose(int[][] matrix) {
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = i + 1; j < matrix[0].length; j++) {
-                matrix[i][j] = matrix[j][i] + matrix[i][j] - (matrix[j][i] = matrix[i][j]);
-            }
-        }
-    }
-
     /*
-    Subarray Sum Equals k
+    Sub array Sum Equals k
     O(n) TC and SC both
      */
     public int subarraySum(int[] nums, int k) {
@@ -89,41 +114,13 @@ public class ArrayProblems {
         return count;
     }
 
-
-    /*
-    n: total number of array elements
-    k: number of arrays
-    TC: O(nlogk + k) SC: O(n + k)
-     */
-    public static List<Integer> mergeSortedArrays(List<List<Integer>> arrays) {
-        List<Integer> ans = new ArrayList<>();
-        PriorityQueue<Item> pq = new PriorityQueue<>(Comparator.comparingInt(i -> i.element)
-        );
-        // O(k)
-        for (int i = 0; i < arrays.size(); i++) {
-            pq.add(new Item(arrays.get(i).get(0), i, 1));
-        }
-        // O(nlogk)
-        while (!pq.isEmpty()) {
-            Item top = pq.poll();
-            ans.add(top.element);
-            if (arrays.get(top.from).size() > top.idx) {
-                pq.add(new Item(arrays.get(top.from).get(top.idx), top.from, top.idx + 1
-                ));
-            }
-        }
-        return ans;
-    }
-
     public int maxSubArraySum(int[] numbers) {
         int max = Integer.MIN_VALUE;
         int local = 0;
         for (int a : numbers) {
             local += a;
             max = Math.max(max, local);
-            if (local < 0) {
-                local = 0;
-            }
+            local = Math.min(0, local);
         }
         return max;
     }
@@ -165,6 +162,12 @@ public class ArrayProblems {
         return nums;
     }
 
+
+    /*
+    nums sorted in non-decreasing order, return an array of the squares of each number sorted in non-decreasing order.
+    Squaring each element and sorting the new array is very trivial
+    could you find an O(n) solution using a different approach?
+     */
     public int[] sortedSquares(int[] nums) {
         int n = nums.length;
         int[] result = new int[n];
@@ -198,7 +201,7 @@ public class ArrayProblems {
         reverse(nums, k, nums.length - 1);
     }
 
-    public void reverse(int[] nums, int start, int end) {
+    private void reverse(int[] nums, int start, int end) {
         while (start < end) {
             int temp = nums[start];
             nums[start] = nums[end];
@@ -206,5 +209,78 @@ public class ArrayProblems {
             start++;
             end--;
         }
+    }
+
+
+    /*
+    The majority element is the element that appears more than ⌊n / 2⌋ times.
+    You may assume that the majority element always exists in the array.
+    Boyer-Moore Voting Algorithm
+     */
+    public int majorityElementI(int[] nums) {
+        // Initialize the major element and its count
+        int major = nums[0];
+        int count = 1;
+
+        // Traverse the array
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] == major) {
+                // Increment count for the current candidate
+                count++;
+            } else {
+                // Decrement count for a different element
+                count--;
+                // If the count reaches zero, update the major candidate
+                if (count == 0) {
+                    major = nums[i];
+                    count = 1;
+                }
+            }
+        }
+        return major;
+    }
+
+    /*
+    find all elements that appear more than ⌊ n/3 ⌋ times.
+     */
+    public List<Integer> majorityElement(int[] nums) {
+        int candidate1 = Integer.MAX_VALUE;
+        int count1 = 0;
+        int candidate2 = Integer.MAX_VALUE;
+        int count2 = 0;
+        for (int num : nums) {
+            if (num == candidate1) {
+                count1++;
+            } else if (num == candidate2) {
+                count2++;
+            } else if (count1 == 0) {
+                candidate1 = num;
+                count1 = 1;
+            } else if (count2 == 0) {
+                candidate2 = num;
+                count2 = 1;
+            } else {
+                count1--;
+                count2--;
+            }
+        }
+        // Reset counters to find the actual counts of candidates.
+        count1 = 0;
+        count2 = 0;
+        for (int num : nums) {
+            if (num == candidate1) {
+                count1++;
+            } else if (num == candidate2) {
+                count2++;
+            }
+        }
+        List<Integer> result = new ArrayList<>();
+        if (count1 > nums.length / 3) {
+            result.add(candidate1);
+        }
+        if (count2 > nums.length / 3) {
+            result.add(candidate2);
+        }
+        return result;
     }
 }

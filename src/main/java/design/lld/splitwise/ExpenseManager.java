@@ -1,6 +1,7 @@
 package design.lld.splitwise;
 
 import design.lld.splitwise.enums.ExpenseType;
+import design.lld.splitwise.models.User;
 import design.lld.splitwise.models.expense.EqualExpense;
 import design.lld.splitwise.models.expense.ExactExpense;
 import design.lld.splitwise.models.expense.Expense;
@@ -8,12 +9,12 @@ import design.lld.splitwise.models.expense.ExpenseMeta;
 import design.lld.splitwise.models.expense.PercentExpense;
 import design.lld.splitwise.models.split.PercentSplit;
 import design.lld.splitwise.models.split.Split;
-import design.lld.splitwise.models.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class ExpenseManager {
 
@@ -87,21 +88,21 @@ public class ExpenseManager {
                                         ExpenseMeta expenseMetadata) {
         switch (expenseType) {
             case EXACT -> {
-                return new ExactExpense(amount, paidBy, splits, expenseMetadata);
+                return new ExactExpense(UUID.randomUUID().toString(), amount, paidBy, splits, expenseMetadata);
             }
             case PERCENT -> {
                 splits.forEach(split -> {
                     PercentSplit percentSplit = (PercentSplit) split;
                     split.setAmount((amount * percentSplit.getPercent()) / 100.0);
                 });
-                return new PercentExpense(amount, paidBy, splits, expenseMetadata);
+                return new PercentExpense(UUID.randomUUID().toString(), amount, paidBy, splits, expenseMetadata);
             }
             case EQUAL -> {
                 int totalSplits = splits.size();
                 double splitAmount = ((double) Math.round(amount * 100 / totalSplits)) / 100.0;
                 splits.forEach(split -> split.setAmount(splitAmount));
                 splits.get(0).setAmount(splitAmount + (amount - splitAmount * totalSplits));
-                return new EqualExpense(amount, paidBy, splits, expenseMetadata);
+                return new EqualExpense(UUID.randomUUID().toString(), amount, paidBy, splits, expenseMetadata);
             }
             default -> {
                 return null;

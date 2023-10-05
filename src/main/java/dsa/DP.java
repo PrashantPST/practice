@@ -4,8 +4,11 @@ import dsa.models.BinaryTree;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 import static java.lang.Math.*;
 
@@ -142,18 +145,21 @@ public class DP {
         for (int i = 1; i <= n; i++) {
             // Initialize dp[i] to i because the worst case is to use i 1s.
             dp[i] = i;
-
-            // Try all perfect squares less than or equal to i.
+            // Try all perfect squares <= i
             for (int j = 1; j * j <= i; j++) {
                 int square = j * j;
                 dp[i] = min(dp[i], 1 + dp[i - square]);
             }
         }
-
         // The final result is stored in dp[n].
         return dp[n];
     }
 
+
+    /*
+    Partition equal subset sum
+    can partition the array into 2 subsets such that sum of the elements in both subsets is equal
+     */
     public boolean canPartition(int[] nums) {
         int n = nums.length;
         if (n == 1) {
@@ -177,26 +183,60 @@ public class DP {
         return dp[sumHalf][nums.length];
     }
 
-    public int findTargetSumWays(int[] nums, int S) {
-        return calculate(nums, 0, 0, S, new HashMap<>());
+    public int findTargetSumWays(int[] numbers, int targetSum) {
+        return calculate(numbers, 0, 0, targetSum, new HashMap<>());
     }
 
     private int calculate(int[] nums, int index, int currentSum, int targetSum, Map<String, Integer> memo) {
         if (index == nums.length) {
             return currentSum == targetSum ? 1 : 0;
         }
-
         String memoKey = index + ":" + currentSum;
         if (memo.containsKey(memoKey)) {
             return memo.get(memoKey);
         }
-
         int add = calculate(nums, index + 1, currentSum + nums[index], targetSum, memo);
         int subtract = calculate(nums, index + 1, currentSum - nums[index], targetSum, memo);
         int totalWays = add + subtract;
-
         memo.put(memoKey, totalWays);
         return totalWays;
     }
 
+    /*
+   O(mn) TC && O(mn) SC
+    */
+    public static String longestCommonSubsequence(String text1, String text2) {
+        int m = text1.length();
+        int n = text2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int row = 1; row < m + 1; row++) {
+            for (int col = 1; col < n + 1; col++) {
+                if (text1.charAt(row - 1) == text2.charAt(col - 1)) {
+                    dp[row][col] = 1 + dp[row - 1][col - 1];
+                } else {
+                    dp[row][col] = Util.max(dp[row - 1][col], dp[row][col - 1]);
+                }
+            }
+        }
+        return Util.buildSubsequence(dp, text1);
+    }
+    public boolean wordBreak(String s, List<String> wordDict) {
+        int n = s.length();
+        boolean[] res = new boolean[n];
+        Set<String> set = new HashSet<>(wordDict);
+        for (int i = 0; i < n; i++) {
+            String subs = s.substring(0, i + 1);
+            if (set.contains(subs)) {
+                res[i] = true;
+            } else {
+                for (int j = 0; j < i; j++) {
+                    if (res[j] && set.contains(s.substring(j + 1, i + 1))) {
+                        res[i] = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return res[n - 1];
+    }
 }

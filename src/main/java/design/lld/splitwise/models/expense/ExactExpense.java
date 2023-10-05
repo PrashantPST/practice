@@ -7,8 +7,8 @@ import design.lld.splitwise.models.User;
 import java.util.List;
 
 public class ExactExpense extends Expense {
-    public ExactExpense(double amount, User paidBy, List<Split> splits, ExpenseMeta expenseMetadata) {
-        super(amount, paidBy, splits, expenseMetadata);
+    public ExactExpense(String id, double amount, User paidBy, List<Split> splits, ExpenseMeta expenseMetadata) {
+        super(id, amount, paidBy, splits, expenseMetadata);
     }
 
     @Override

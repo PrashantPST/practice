@@ -1,12 +1,14 @@
 package dsa.models;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
-@Getter
 @AllArgsConstructor
-public class Interval {
-
-    public int start;
-    public int end;
+@Getter
+@Setter
+public class Pair<K, V> {
+    K key;
+    V value;
 }

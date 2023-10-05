@@ -7,8 +7,8 @@ import design.lld.splitwise.models.User;
 import java.util.List;
 
 public class PercentExpense extends Expense {
-    public PercentExpense(double amount, User paidBy, List<Split> splits, ExpenseMeta metadata) {
-        super(amount, paidBy, splits, metadata);
+    public PercentExpense(String id, double amount, User paidBy, List<Split> splits, ExpenseMeta metadata) {
+        super(id, amount, paidBy, splits, metadata);
     }
 
     @Override

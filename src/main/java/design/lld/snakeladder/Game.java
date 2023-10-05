@@ -25,7 +25,7 @@ public class Game {
     }
 
     public void startGame() {
-        this.status = GameStatus.RUNNING;
+        this.status = GameStatus.IN_PROGRESS;
         board.printBoard();
         while (players.size() > 1) {
             Player currentPlayer = players.poll();
