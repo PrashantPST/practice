@@ -283,7 +283,7 @@ public class Practice {
     }
 
     /*
-    Jump Game I
+    Jump Game
     You are initially positioned at the array's first index, and each element in the array represents
     your maximum jump length at that position
     Return true if you can reach the last index, or false otherwise.
@@ -1094,6 +1094,7 @@ public class Practice {
     where adjacent cells are horizontally or vertically neighboring
      */
     public boolean exist(char[][] board, String word) {
+
         return false;
     }
 
@@ -1868,7 +1869,7 @@ public class Practice {
 
     /*
     combination-sum
-    Given an array of distinct integers candidates and a , return a list of all unique
+    Given an array of distinct integers candidates and a, return a list of all unique
     combinations of candidates where the chosen numbers sum to target
     The same number may be chosen from candidates an unlimited number of times
      */
@@ -2112,5 +2113,10 @@ public class Practice {
             }
         }
         return cnt;
+    }
+
+    public String alienOrder(String[] words) {
+
+
     }
 }

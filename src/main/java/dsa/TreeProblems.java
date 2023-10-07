@@ -150,31 +150,6 @@ public class TreeProblems {
         return views;
     }
 
-
-    public BinaryTree lowestCommonAncestor(BinaryTree root, BinaryTree p, BinaryTree q) {
-        if (root == null) {
-            return null;
-        }
-        if (root == p || root == q) {
-            return root;
-        }
-        BinaryTree l = lowestCommonAncestor(root.left, p, q);
-        BinaryTree r = lowestCommonAncestor(root.right, p, q);
-        if (l != null & r != null) {
-            return root;
-        }
-        return l != null ? l : r;
-    }
-
-    public BinaryTree lowestCommonAncestorInABST(BinaryTree root, BinaryTree p, BinaryTree q) {
-        if (p.value < root.value && q.value < root.value) {
-            return lowestCommonAncestorInABST(root.left, p, q);
-        } else if (root.value < p.value && root.value < q.value) {
-            return lowestCommonAncestorInABST(root.right, p, q);
-        }
-        return root;
-    }
-
     public int kthSmallestInABst(BinaryTree root, int k) {
         LinkedList<BinaryTree> stack = new LinkedList<>();
         while (true) {
