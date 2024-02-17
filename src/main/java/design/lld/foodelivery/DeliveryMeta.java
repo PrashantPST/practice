@@ -1,6 +1,6 @@
 package design.lld.foodelivery;
 
-import design.lld.cabbooking.models.Location;
+import design.lld.uber.models.Location;
 
 public class DeliveryMeta {
     Location userLoc;

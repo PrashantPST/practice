@@ -9,25 +9,40 @@ import design.lld.notification.strategy.NotificationProvider;
 import design.lld.notification.strategy.PushNotificationProvider;
 import design.lld.notification.strategy.SMSNotificationProvider;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class NotificationProviderFactory {
 
-    private static final Map<NotificationChannel, NotificationProvider> notificationProvider = new HashMap<>();
+    private static final Map<NotificationChannel, NotificationProvider> NOTIFICATION_PROVIDERS;
 
     static {
-        notificationProvider.put(NotificationChannel.APP, new AppNotificationProvider());
-        notificationProvider.put(NotificationChannel.EMAIL, new EmailNotificationProvider());
-        notificationProvider.put(NotificationChannel.SMS, new SMSNotificationProvider());
-        notificationProvider.put(NotificationChannel.PUSH, new PushNotificationProvider());
-        notificationProvider.put(NotificationChannel.IVRS, new IVRSNotificationProvider());
+        NOTIFICATION_PROVIDERS = Map.of(
+                NotificationChannel.APP, new AppNotificationProvider(),
+                NotificationChannel.EMAIL, new EmailNotificationProvider(),
+                NotificationChannel.SMS, new SMSNotificationProvider(),
+                NotificationChannel.PUSH, new PushNotificationProvider(),
+                NotificationChannel.IVRS, new IVRSNotificationProvider()
+        );
     }
 
     private NotificationProviderFactory() {
+        // Private constructor to prevent instantiation
     }
 
-    public static NotificationProvider getNotificationProvider(NotificationChannel channel) {
-        return notificationProvider.get(channel);
+    /**
+     * Retrieves the notification provider for the specified channel.
+     * @param channel The notification channel.
+     * @return The notification provider for the given channel.
+     * @throws IllegalArgumentException if the channel is not supported.
+     */
+    public NotificationProvider getNotificationProvider(NotificationChannel channel) {
+        NotificationProvider provider = NOTIFICATION_PROVIDERS.get(channel);
+        if (provider == null) {
+            throw new IllegalArgumentException("Unsupported notification channel: " + channel);
+        }
+        return provider;
     }
 }
+
+
+

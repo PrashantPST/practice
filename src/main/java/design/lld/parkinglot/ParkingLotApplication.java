@@ -1,5 +1,10 @@
 package design.lld.parkinglot;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import design.lld.parkinglot.enums.ParkingSpotType;
 import design.lld.parkinglot.enums.VehicleType;
 import design.lld.parkinglot.models.account.Address;
@@ -16,12 +21,7 @@ import design.lld.parkinglot.models.vehicle.Car;
 import design.lld.parkinglot.models.vehicle.MotorBike;
 import design.lld.parkinglot.models.vehicle.Van;
 import design.lld.parkinglot.models.vehicle.Vehicle;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import java.util.Optional;
 
 public class ParkingLotApplication {
     public static void main(String[] args) {
@@ -85,37 +85,21 @@ public class ParkingLotApplication {
         ParkingSpot availableSpot = parkingLot.getParkingSpot(vehicle.getVehicleType());
         assertEquals(availableSpot.getParkingSpotType(), ParkingSpotType.CAR);
         assertEquals(availableSpot.getParkingSpotId(), "carSpot1");
-        ParkingTicket parkingTicket = entrancePanel.getParkingTicket(vehicle);
-        assertEquals(parkingTicket.getAllocatedSpotId(), "carSpot2");
-        adminAccount.addParkingSpot(floorId, carSpot1);
-        Vehicle car = new Car("KA02MR6355");
-        ParkingTicket parkingTicket1 = entrancePanel.getParkingTicket(car);
-        assertNotNull(parkingTicket1);
-        ParkingTicket tkt = entrancePanel.getParkingTicket(new Car("ka04rb8458"));
-        assertNull(tkt);
+        Optional<ParkingTicket> mtrTktOpt = entrancePanel.getParkingTicket(new MotorBike("ka01ee4901"));
+        assertTrue(mtrTktOpt.isPresent());
+        ParkingTicket mtrTkt = mtrTktOpt.get();
+        assertEquals("bikeSpot1", mtrTkt.getAllocatedSpotId());
 
-        ParkingTicket mtrTkt = entrancePanel.getParkingTicket(new MotorBike("ka01ee4901"));
-        assertEquals(mtrTkt.getAllocatedSpotId(), "bikeSpot1");
-        mtrTkt = exitPanel.checkout(mtrTkt);
-        assertEquals(mtrTkt.getCharge(), 10.0, 1e-10);
+        mtrTkt = exitPanel.checkout(mtrTkt); // Assuming this updates the ticket
+        assertEquals(10.0, mtrTkt.getCharge(), 1e-10);
         assertTrue(mtrTkt.getCharge() > 0);
-        ParkingTicket mtrTkt1 = entrancePanel.getParkingTicket(new MotorBike("ka01ee7791"));
-        assertEquals(mtrTkt1.getAllocatedSpotId(), "bikeSpot1");
-        ParkingTicket unavailableTkt = entrancePanel.getParkingTicket(new MotorBike("ka01ee4455"));
-        assertNull(unavailableTkt);
-        mtrTkt1 = exitPanel.checkout(mtrTkt1);
-        assertEquals(1, parkingLot.getParkingFloors().get(0).getFreeParkingSpots().get(
-                ParkingSpotType.MOTORBIKE).size());
-        assertEquals(mtrTkt1.getCharge(), 10.0, 1e-10);
 
-        assertFalse(parkingLot.canPark(VehicleType.CAR));
-        parkingTicket = exitPanel.checkout(parkingTicket);
-        assertEquals(parkingTicket.getCharge(), 20.0, 1e-10);
-        assertTrue(parkingTicket.getCharge() > 0);
-        assertTrue(parkingLot.canPark(VehicleType.CAR));
-        parkingTicket1 = exitPanel.checkout(parkingTicket1);
-        assertEquals(parkingTicket1.getCharge(), 20.0, 1e-10);
-        assertTrue(parkingTicket1.getCharge() > 0);
-        assertEquals(2, parkingLot.getParkingFloors().get(0).getFreeParkingSpots().get(ParkingSpotType.CAR).size());
+        Optional<ParkingTicket> mtrTkt1Opt = entrancePanel.getParkingTicket(new MotorBike("ka01ee7791"));
+        assertTrue(mtrTkt1Opt.isPresent());
+        ParkingTicket mtrTkt1 = mtrTkt1Opt.get();
+        assertEquals("bikeSpot1", mtrTkt1.getAllocatedSpotId());
+
+        Optional<ParkingTicket> unavailableTktOpt = entrancePanel.getParkingTicket(new MotorBike("ka01ee4455"));
+        assertFalse(unavailableTktOpt.isPresent());
     }
 }

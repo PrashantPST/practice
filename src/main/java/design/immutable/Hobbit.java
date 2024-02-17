@@ -22,13 +22,16 @@ final class Hobbit {
     private final List<String> stuff;
 
 
-    // all args constructor :=>
+    // all args constructor :=> Making deep copies of mutable objects in the constructor
     Hobbit(String name, Address address, List<String> stuff) {
         this.name = name;
         this.address = Address.builder().city(address.getCountry()).country(address.getCountry()).build();
-        this.stuff = stuff;
+        // Creating a defensive copy of the mutable List
+        this.stuff = new ArrayList<>(stuff);
     }
-
+    /*
+        Returning deep copies of mutable objects in getter methods
+     */
     Address getAddress() {
         return Address.builder().country(address.getCountry()).city(address.getCity()).build();
     }

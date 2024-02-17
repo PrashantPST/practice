@@ -1,66 +1,69 @@
 package design.lld.parkinglot.models.parking;
 
+import static design.lld.parkinglot.models.parking.ParkingLot.getSpotTypeForVehicle;
+
 import design.lld.parkinglot.enums.ParkingSpotType;
 import design.lld.parkinglot.enums.VehicleType;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
-
-import static design.lld.parkinglot.enums.ParkingSpotType.CAR;
-import static design.lld.parkinglot.enums.ParkingSpotType.ELECTRIC;
-import static design.lld.parkinglot.enums.ParkingSpotType.HANDICAPPED;
-import static design.lld.parkinglot.enums.ParkingSpotType.LARGE;
-import static design.lld.parkinglot.enums.ParkingSpotType.MOTORBIKE;
-import static design.lld.parkinglot.models.parking.ParkingLot.getSpotTypeForVehicle;
+import lombok.Getter;
 
 public class ParkingFloor {
     @Getter
-    @Setter
-    private String floorId;
-    @Getter
-    private Map<ParkingSpotType, Deque<ParkingSpot>> freeParkingSpots = new HashMap<>();
-    private final Map<String, ParkingSpot> usedParkingSpots = new HashMap<>();
+    private final String floorId;
+    private final Map<ParkingSpotType, Deque<ParkingSpot>> freeParkingSpots = new ConcurrentHashMap<>();
+    private final Map<String, ParkingSpot> usedParkingSpots = new ConcurrentHashMap<>();
+    private final Map<ParkingSpotType, Object> locks = new ConcurrentHashMap<>();
 
     public ParkingFloor(String id) {
         this.floorId = id;
-        freeParkingSpots.put(HANDICAPPED, new ConcurrentLinkedDeque<>());
-        freeParkingSpots.put(CAR, new ConcurrentLinkedDeque<>());
-        freeParkingSpots.put(LARGE, new ConcurrentLinkedDeque<>());
-        freeParkingSpots.put(MOTORBIKE, new ConcurrentLinkedDeque<>());
-        freeParkingSpots.put(ELECTRIC, new ConcurrentLinkedDeque<>());
+        initializeFreeParkingSpots();
+    }
+
+    private void initializeFreeParkingSpots() {
+        for (ParkingSpotType type : ParkingSpotType.values()) {
+            freeParkingSpots.put(type, new ConcurrentLinkedDeque<>());
+            locks.put(type, new Object());
+        }
     }
 
     public boolean isFloorFull() {
-        return freeParkingSpots.entrySet().stream().noneMatch(entry -> entry.getValue().size() > 0);
+        return freeParkingSpots.values().stream().allMatch(Deque::isEmpty);
     }
 
     public boolean canPark(ParkingSpotType parkingSpotType) {
-        return freeParkingSpots.get(parkingSpotType).size() > 0;
+        Deque<ParkingSpot> spots = freeParkingSpots.get(parkingSpotType);
+        return spots != null && !spots.isEmpty();
     }
 
-    public synchronized ParkingSpot reserveSpot(VehicleType vehicleType) {
-        if (!canPark(getSpotTypeForVehicle(vehicleType))) {
+    public ParkingSpot reserveSpot(VehicleType vehicleType) {
+        ParkingSpotType parkingSpotType = getSpotTypeForVehicle(vehicleType);
+        if (!canPark(parkingSpotType)) {
             return null;
         }
-        ParkingSpotType parkingSpotType = getSpotTypeForVehicle(vehicleType);
-        ParkingSpot parkingSpot = freeParkingSpots.get(parkingSpotType).poll();
-        usedParkingSpots.put(parkingSpot.getParkingSpotId(), parkingSpot);
-        return parkingSpot;
+        return reserveSpotInternal(parkingSpotType);
+    }
+
+    private ParkingSpot reserveSpotInternal(ParkingSpotType parkingSpotType) {
+        synchronized (locks.get(parkingSpotType)) {
+            ParkingSpot parkingSpot = freeParkingSpots.get(parkingSpotType).poll();
+            if (parkingSpot != null) {
+                usedParkingSpots.put(parkingSpot.getParkingSpotId(), parkingSpot);
+            }
+            return parkingSpot;
+        }
     }
 
     public Optional<ParkingSpot> vacateSpot(String parkingSpotId) {
         ParkingSpot parkingSpot = usedParkingSpots.remove(parkingSpotId);
-        if (Objects.nonNull(parkingSpot)) {
+        if (parkingSpot != null) {
             parkingSpot.freeSpot();
             freeParkingSpots.get(parkingSpot.getParkingSpotType()).addFirst(parkingSpot);
-            return Optional.of(parkingSpot);
         }
-        return Optional.empty();
+        return Optional.ofNullable(parkingSpot);
     }
 }
+

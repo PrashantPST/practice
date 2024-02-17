@@ -1,8 +1,8 @@
 package design.lld.splitwise.models.expense;
 
+import design.lld.splitwise.models.User;
 import design.lld.splitwise.models.split.ExactSplit;
 import design.lld.splitwise.models.split.Split;
-import design.lld.splitwise.models.User;
 
 import java.util.List;
 
@@ -11,16 +11,20 @@ public class ExactExpense extends Expense {
         super(id, amount, paidBy, splits, expenseMetadata);
     }
 
+    /**
+     * Validates if all the splits are of type ExactSplit and their total sum equals the expense amount.
+     * @return true if both conditions are satisfied; false otherwise.
+     */
     @Override
     public boolean validate() {
+        double sumSplitAmount = 0;
         for (Split split : getSplits()) {
             if (!(split instanceof ExactSplit)) {
                 return false;
             }
+            sumSplitAmount += split.getAmount();
         }
-        //  the total sum of shares should be equal to the expense amount
-        double totalAmount = getAmount();
-        double sumSplitAmount = getSplits().stream().map(split -> (ExactSplit) split).mapToDouble(Split::getAmount).sum();
-        return totalAmount == sumSplitAmount;
+        return getAmount() == sumSplitAmount;
     }
 }
+

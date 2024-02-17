@@ -1,6 +1,6 @@
 package design.lld.foodelivery;
 
-import design.lld.cabbooking.models.Location;
+import design.lld.uber.models.Location;
 
 public class Restaurant {
     String name;	//storing name as id itself for now. id should be generated and name should be passed in ctor

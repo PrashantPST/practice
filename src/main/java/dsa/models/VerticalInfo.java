@@ -5,8 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public
-class VerticalInfo {
-    private final BinaryTree binaryTree;
-    private final int horizontalDistance;
+public class VerticalInfo {
+    public final BinaryTree node;
+    public final int horizontalDistance;
 }

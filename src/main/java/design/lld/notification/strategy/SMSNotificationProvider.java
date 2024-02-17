@@ -1,6 +1,5 @@
 package design.lld.notification.strategy;
 
-import design.lld.notification.enums.NotificationChannel;
 import design.lld.notification.model.Notification;
 import design.lld.notification.model.SmsFormat;
 import design.lld.notification.third_party.ThirdPartySmsSender;
@@ -22,17 +21,7 @@ public class SMSNotificationProvider implements NotificationProvider {
     public void sendNotification(Notification notification) {
         final SmsFormat smsFormat = notification.getMessage().getSmsFormat();
         thirdPartySmsSender.sendSms(smsFormat.getBody(), notification.getTo().getPhone());
-
-
-        //        if (notification.getPriorityType() == TRANSACTIONAL) {
-//            thirdPartySmsSenderHighRelHighCost.sendSms();
-//        }
-
         IThirdPartySmsSender tpSmsSender = thirdPartySmsSenderPickerStrategy.pick(smsSenders, notification);
     }
 
-    @Override
-    public NotificationChannel getChannel() {
-        return NotificationChannel.SMS;
-    }
 }

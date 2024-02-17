@@ -1,47 +1,47 @@
 package design.lld.vendingmachine;
 
-
-import design.lld.vendingmachine.inventory.Inventory;
-import design.lld.vendingmachine.inventory.Product;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 @Getter
 @Setter
 public class VendingMachine {
 
-    private double amount;
-    private Inventory inventory;
-    private State insertCoinState;
-    private State selectProductState;
-    private State productDispenseState;
-    private State currentState;
-    private static final int AISLE_COUNT = 2;
-
+    private VendingMachineState state;
+    private final Map<String, Double> productPriceMap = new HashMap<>();
+    private String selectedProduct;
+    private double insertedMoney;
     public VendingMachine() {
-        insertCoinState = new InsertCoinState(this);
-        selectProductState = new SelectProductState(this);
-        productDispenseState = new ProductDispenseState(this);
-        currentState = insertCoinState;
-        amount = 0;
-        inventory = new Inventory(AISLE_COUNT);
+        this.state = new WaitingForSelection();
+        // Initialize with some products and prices
+        productPriceMap.put("Soda", 1.5);
+        productPriceMap.put("Water", 1.0);
     }
 
-    public boolean hasSufficientAmount(double price) {
-        return this.amount >= price;
+    public void selectProduct(String productId) {
+        state.selectProduct(this, productId);
     }
 
-    public void addProduct(Product product) {
-        this.inventory.add(product);
+    public void insertMoney(double amount) {
+        state.insertMoney(this, amount);
     }
 
-    public void insertCoin(double amount) {
-        this.currentState.insertCoin(amount);
-        System.out.println(amount + " is inserted");
+    public void dispenseProduct() {
+        state.dispenseProduct(this);
     }
 
-    public void pressButton(int slotNumber) {
-        this.currentState.selectProduct(slotNumber);
-        this.currentState.dispense(slotNumber);
+    public boolean hasSufficientMoney(double amount) {
+        this.insertedMoney += amount;
+        return insertedMoney >= productPriceMap.getOrDefault(selectedProduct, Double.MAX_VALUE);
+    }
+    public void deductPriceFromInsertedMoney(String productId) {
+        Double price = productPriceMap.getOrDefault(productId, 0.0);
+        this.insertedMoney -= price;
+        System.out.println("Remaining money: " + this.insertedMoney);
     }
 }
+

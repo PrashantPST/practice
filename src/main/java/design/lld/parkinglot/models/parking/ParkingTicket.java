@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class ParkingTicket {
+
     private String ticketNumber;
     private String licensePlateNumber;
     private String allocatedSpotId;

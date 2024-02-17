@@ -1,14 +1,14 @@
 package dsa.models;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
 import java.util.Objects;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class BinaryTree {
 
@@ -16,6 +16,42 @@ public class BinaryTree {
     public BinaryTree right;
     public int value;
     private int diameter;
+
+    public BinaryTree(int value) {
+        this.value = value;
+    }
+
+    public List<Integer> spiralOrder() {
+        Deque<BinaryTree> s1 = new ArrayDeque<>();
+        Deque<BinaryTree> s2 = new ArrayDeque<>();
+        s1.push(this);
+        List<Integer> ans = new ArrayList<>();
+        while (!s1.isEmpty()) {
+            while (!s1.isEmpty()) {
+                BinaryTree temp = s1.pop();
+                ans.add(temp.value);
+                if (temp.left != null)
+                    s2.push(temp.left);
+                if (temp.right != null)
+                    s2.push(temp.right);
+            }
+            while (!s2.isEmpty()) {
+                BinaryTree temp = s2.pop();
+                ans.add(temp.value);
+                if (temp.right != null)
+                    s1.push(temp.right);
+                if (temp.left != null)
+                    s1.push(temp.left);
+            }
+        }
+        return ans;
+    }
+
+    // method to add children for simplifying tree creation in tests
+    public void addChild(int leftValue, int rightValue) {
+        this.left = new BinaryTree(leftValue);
+        this.right = new BinaryTree(rightValue);
+    }
 
     public int maxDepth(BinaryTree tree) {
         if (Objects.isNull(tree)) {
@@ -32,8 +68,9 @@ public class BinaryTree {
         longestPath(root);
         return diameter;
     }
-    private int longestPath(BinaryTree node){
-        if(node == null) {
+
+    private int longestPath(BinaryTree node) {
+        if (node == null) {
             return 0;
         }
         // recursively find the longest path in
@@ -71,5 +108,21 @@ public class BinaryTree {
             return lowestCommonAncestorInABST(root.right, p, q);
         }
         return root;
+    }
+
+    void printKDistanceNodeDown(BinaryTree node, int k) {
+        // Base Case
+        if (node == null || k < 0) {
+            return;
+        }
+
+        // If we reach a k distant node, print it
+        if (k == 0) {
+            System.out.print(node.value);
+            return;
+        }
+        // Recur for left and right subtrees
+        printKDistanceNodeDown(node.left, k - 1);
+        printKDistanceNodeDown(node.right, k - 1);
     }
 }

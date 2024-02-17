@@ -60,6 +60,7 @@ public class ParkingLotRepository {
         if (floor.isEmpty()) {
             throw new InvalidParkingFloorException("Invalid parking floor");
         }
+        /*
         Optional<ParkingSpot> spot =
                 floor.get().getFreeParkingSpots().get(parkingSpot.getParkingSpotType())
                         .stream().filter(pSpot ->
@@ -70,6 +71,8 @@ public class ParkingLotRepository {
         }
 
         floor.get().getFreeParkingSpots().get(parkingSpot.getParkingSpotType()).add(parkingSpot);
+
+         */
         return parkingSpot;
     }
 

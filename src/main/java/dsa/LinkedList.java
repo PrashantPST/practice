@@ -2,14 +2,16 @@ package dsa;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class LinkedList {
-    private int value;
-    private LinkedList next;
+    public int value;
+    public LinkedList next;
 
     public LinkedList middleNode(LinkedList head) {
         LinkedList slow = head, fast = head;
@@ -47,24 +49,20 @@ public class LinkedList {
      */
     public static LinkedList mergeTwoLinkedLists(LinkedList l1, LinkedList l2) {
         LinkedList dummyHead = new LinkedList(0, null);
-        LinkedList curr = dummyHead;
+        LinkedList current = dummyHead;
         while (l1 != null && l2 != null) {
             if (l1.getValue() < l2.getValue()) {
-                curr.setNext(l1);
+                current.next = l1;
                 l1 = l1.getNext();
             } else {
-                curr.setNext(l2);
+                current.next = l2;
                 l2 = l2.getNext();
             }
-            curr = curr.getNext();
+            current = current.next;
         }
-        if (l1 != null) {
-            curr.setNext(l1);
-        }
-        if (l2 != null) {
-            curr.setNext(l2);
-        }
-        return dummyHead.getNext();
+        // Attach the remaining part of l1 or l2
+        current.next = (l1 != null) ? l1 : l2;
+        return dummyHead.next;
     }
 
     /*
@@ -116,8 +114,8 @@ public class LinkedList {
         LinkedList previousNode = null;
         LinkedList currentNode = head;
         while (currentNode != null) {
-            LinkedList nextNode = currentNode.getNext();
-            currentNode.setNext(previousNode);
+            LinkedList nextNode = currentNode.next;
+            currentNode.next = previousNode;
             previousNode = currentNode;
             currentNode = nextNode;
         }
@@ -125,30 +123,30 @@ public class LinkedList {
     }
 
     /*
-   reverse the nodes of the list k at a time, 1 <= k<= length of the linked list
-   If the number of nodes is not a multiple of k then left-out nodes, in the end, should remain as it is.
+       reverse the nodes of the list k at a time, 1 <= k<= length of the linked list
+       If the number of nodes is not a multiple of k then left-out nodes, in the end, should remain as it is.
     */
     public LinkedList reverseKGroup(LinkedList head, int k) {
         if (head == null) {
-            return null;
+            return head;
         }
         LinkedList prev = null;
         int k2 = k;
         LinkedList current = head;
         while (current != null && k-- > 0) {
-            LinkedList nodeNext = current.getNext();
-            current.setNext(prev);
+            LinkedList nodeNext = current.next;
+            current.next = prev;
             prev = current;
             current = nodeNext;
         }
         if (k == 0) {
-            head.setNext(reverseKGroup(current, k2));
+            head.next = reverseKGroup(current, k2);
         } else if (k > 0) {
             LinkedList previousNode = null;
             LinkedList currentNode = prev;
             while (currentNode != null) {
-                LinkedList nextNode = currentNode.getNext();
-                currentNode.setNext(previousNode);
+                LinkedList nextNode = currentNode.next;
+                currentNode.next = previousNode;
                 previousNode = currentNode;
                 currentNode = nextNode;
             }
@@ -197,7 +195,6 @@ public class LinkedList {
             tmp = first.getNext();
             first.setNext(second);
             first = tmp;
-
             tmp = second.getNext();
             second.setNext(first);
             second = tmp;

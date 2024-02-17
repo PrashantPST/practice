@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public abstract class Account {
+
     private String id;
     private String email;
     private String userName;

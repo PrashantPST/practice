@@ -1,11 +1,11 @@
 package design.pattern.structural.proxy;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Properties {
-    public static Set<String> bannedSites = Stream.of("xyz.com", "tamilrockers.com", "torrent.com")
-            .collect(Collectors.toCollection(HashSet::new));
+    public static Set<String> bannedSites = new HashSet<>(
+        Arrays.asList("xyz.com", "tamilrockers.com", "torrent.com", "xvideos.com"));
+
 }

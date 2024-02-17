@@ -1,21 +1,46 @@
 package design.lld.notification.service;
 
+import design.lld.notification.model.Notification;
 import design.lld.splitwise.models.User;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
 
+@Service
 public class SubscriptionService {
 
-    public void subscribe(User subscriber, String susbcriptionKey) {
-        // Add to the list
-    }
+  private final ConcurrentHashMap<String, CopyOnWriteArrayList<String>> subscriptions;
 
-    public void unsubscribe(User subscriber, String susbcriptionKey) {
+  @Autowired
+  private NotificationService notificationService;
 
-    }
+  public SubscriptionService(
+      ConcurrentHashMap<String, CopyOnWriteArrayList<String>> subscriptions) {
+    this.subscriptions = subscriptions;
+  }
 
-    public List<User> getSubscribers(String susbcriptionKey) {
-        // Users who are subscribed.
-        return null;
-    }
+  public void subscribe(User subscriber, String subscriptionKey) {
+    String userId = subscriber.getId();
+    this.subscriptions.computeIfAbsent(subscriptionKey, k -> new CopyOnWriteArrayList<>())
+        .add(userId);
+  }
+
+  public void unsubscribe(String subscriptionKey, User subscriber) {
+    String userId = subscriber.getId();
+    this.subscriptions.computeIfPresent(subscriptionKey, (key, subscribers) -> {
+      subscribers.remove(userId);
+      return subscribers;
+    });
+  }
+
+  public CopyOnWriteArrayList<String> getSubscribers(String subscriptionKey) {
+    return this.subscriptions.getOrDefault(subscriptionKey, new CopyOnWriteArrayList<>());
+  }
+
+  public void publishToSubscribers(String subscriptionKey, Notification notification) {
+    final CopyOnWriteArrayList<String> subscribers = getSubscribers(subscriptionKey);
+    subscribers.forEach(user -> notificationService.sendNotification(notification));
+  }
 }

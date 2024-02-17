@@ -9,10 +9,11 @@ public class ProxyInternet implements Internet {
 
     @Override
     public void connectTo(String serverHost) throws Exception {
-        // get properties
         if (Properties.bannedSites.contains(serverHost)) {
-            throw new Exception("Access Denied to " + serverHost);
+            System.out.println("Access Denied to " + serverHost);
         }
-        internet.connectTo(serverHost);
+        else {
+            internet.connectTo(serverHost);
+        }
     }
 }
