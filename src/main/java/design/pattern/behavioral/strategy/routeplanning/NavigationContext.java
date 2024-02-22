@@ -1,5 +1,7 @@
 package design.pattern.behavioral.strategy.routeplanning;
 
+import design.lld.uber.models.Location;
+
 public class NavigationContext {
     private RouteStrategy routeStrategy;
 
@@ -7,7 +9,7 @@ public class NavigationContext {
         this.routeStrategy = routeStrategy;
     }
 
-    public void navigate(String pointA, String pointB) {
+    public void navigate(Location pointA, Location pointB) {
         routeStrategy.buildRoute(pointA, pointB);
     }
 }

@@ -1,9 +1,10 @@
 package design.lld.bookmyshow.repository;
 
-import design.lld.bookmyshow.Reservation;
+
+import design.lld.bookmyshow.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+public interface BookingRepository extends JpaRepository<Booking, Long> {
   // Standard CRUD methods
 }
 

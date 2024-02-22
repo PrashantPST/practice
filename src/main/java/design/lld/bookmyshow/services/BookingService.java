@@ -1,11 +1,11 @@
 package design.lld.bookmyshow.services;
 
-import design.lld.bookmyshow.Reservation;
+import design.lld.bookmyshow.Booking;
 import design.lld.bookmyshow.Seat;
 import design.lld.bookmyshow.dtos.PaymentResult;
 import design.lld.bookmyshow.enums.SeatStatus;
 import design.lld.bookmyshow.exceptions.PaymentFailedException;
-import design.lld.bookmyshow.repository.ReservationRepository;
+import design.lld.bookmyshow.repository.BookingRepository;
 import design.lld.bookmyshow.repository.SeatRepository;
 import design.lld.splitwise.models.User;
 import java.math.BigDecimal;
@@ -18,13 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ReservationService {
+public class BookingService {
 
-  private static final long RESERVATION_EXPIRY_DURATION_MINUTES = 10;
+  private static final long BOOKING_EXPIRY_DURATION_MINUTES = 10;
   @Autowired
   private SeatRepository seatRepository;
   @Autowired
-  private ReservationRepository reservationRepository;
+  private BookingRepository bookingRepository;
   @Autowired
   private PaymentService paymentService;
 
@@ -42,7 +42,7 @@ public class ReservationService {
       }
 
       seat.setStatus(SeatStatus.RESERVED);
-      seat.setReservationExpiryTime(now.plusMinutes(RESERVATION_EXPIRY_DURATION_MINUTES));
+      seat.setBookingExpiryTime(now.plusMinutes(BOOKING_EXPIRY_DURATION_MINUTES));
       seatsToReserve.add(seat);
     }
     seatRepository.saveAll(seatsToReserve); // Batch update
@@ -56,13 +56,13 @@ public class ReservationService {
   }
 
   @Transactional
-  public Reservation createBooking(List<Seat> seats, User user) {
+  public Booking createBooking(List<Seat> seats, User user) {
     BigDecimal totalPrice = calculateTotalPrice(seats);
     PaymentResult paymentResult = paymentService.processPayment(user, totalPrice);
 
     if (paymentResult.isSuccessful()) {
       reserveAndBookSeats(seats);
-      return createAndSaveReservation(seats);
+      return createAndSaveBooking(seats);
     } else {
       throw new PaymentFailedException(paymentResult.getErrorMessage());
     }
@@ -75,16 +75,16 @@ public class ReservationService {
     }
     seats.forEach(seat -> {
       seat.setStatus(SeatStatus.BOOKED);
-      seat.setReservationExpiryTime(null);
+      seat.setBookingExpiryTime(null);
     });
     seatRepository.saveAll(seats); // Batch update
   }
 
-  private Reservation createAndSaveReservation(List<Seat> seats) {
-    Reservation reservation = new Reservation();
-    reservation.setSeats(seats);
-    reservation.setBookingTime(LocalDateTime.now());
+  private Booking createAndSaveBooking(List<Seat> seats) {
+    Booking booking= new Booking();
+    booking.setSeats(seats);
+    booking.setBookingTime(LocalDateTime.now());
     // Add other necessary booking details here
-    return reservationRepository.save(reservation);
+    return bookingRepository.save(booking);
   }
 }

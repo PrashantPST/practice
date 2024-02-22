@@ -25,12 +25,12 @@ public class Seat {
   @JoinColumn(name = "show_id", nullable = false)
   private Show show;
   @ManyToOne
-  @JoinColumn(name = "reservation_id")
-  private Reservation reservation;
+  @JoinColumn(name = "booking_id")
+  private Booking booking;
   private String number;
   private BigDecimal price;
   private SeatType type;
   private SeatStatus status;
-  private LocalDateTime reservationExpiryTime;
+  private LocalDateTime bookingExpiryTime;
 }
 

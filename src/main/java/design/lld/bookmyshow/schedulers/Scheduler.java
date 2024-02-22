@@ -23,7 +23,7 @@ public class Scheduler {
         SeatStatus.RESERVED, LocalDateTime.now());
     for (Seat seat : seatsToRelease) {
       seat.setStatus(SeatStatus.AVAILABLE);
-      seat.setReservationExpiryTime(null);
+      seat.setBookingExpiryTime(null);
       seatRepository.save(seat);
     }
   }

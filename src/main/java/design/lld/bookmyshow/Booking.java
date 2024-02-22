@@ -17,20 +17,20 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "reservation")
+@Table(name = "booking")
 @Data
-public class Reservation {
+public class Booking {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long reservationId;
+  private Long bookingId;
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
   @ManyToOne
   @JoinColumn(name = "show_id", nullable = false)
   private Show show;
-  @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Seat> seats;
   private LocalDateTime bookingTime;
   private BigDecimal totalPrice;
