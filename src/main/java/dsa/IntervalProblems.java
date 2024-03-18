@@ -6,6 +6,7 @@ import static java.util.Comparator.comparingInt;
 import dsa.models.Interval;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -65,12 +66,11 @@ public class IntervalProblems {
     return intervals.length - ans - 1;
   }
 
-  /*
-  Meeting Rooms I
-  Given an array of meeting time intervals where intervals[i] = [start, end],
-  determine if a person could attend all meeting
-  TC - O(nlogn)
-  SC - O(1)
+  /**
+   * Meeting Rooms I Given an array of meeting time intervals where intervals[i] = [start, end],
+   * determine if a person could attend all meeting TC - O(nlogn) SC - O(1) The idea here is to sort
+   * the meetings by starting time. Then, go through the meetings one by one and make sure that each
+   * meeting ends before the next one starts.
    */
   public static boolean canAttendAllMeetings(int[][] intervals) {
     Arrays.sort(intervals, comparingInt(a -> a[0]));
@@ -88,12 +88,9 @@ public class IntervalProblems {
     return nextMeetingStart < prevMeetingEnd;
   }
 
-  /*
-  Meeting Rooms II
-  Given an array of meeting time intervals where intervals[i] = [start, end],
-  return the minimum number of conference rooms required
-  TC - O(NlogN)
-  SC - O(N)
+  /**
+   * Meeting Rooms II Given an array of meeting time intervals where intervals[i] = [start, end],
+   * return the minimum number of conference rooms required TC - O(NlogN) SC - O(N)
    */
   public int minimumMeetingRooms(Interval[] intervals) {
     // Sort the given meetings by their start time.
@@ -107,6 +104,47 @@ public class IntervalProblems {
       allocatedRooms.add(interval.getEnd());
     }
     return allocatedRooms.size();
+  }
+
+  /**
+   * Meeting Rooms III Calculates the room with the most meetings held.
+   * @param n        The total number of rooms.
+   * @param meetings A 2D array where each sub-array represents a meeting with [startTime, endTime)
+   * @return The index of the room that held the most meetings. If multiple rooms qualify, returns
+   * the one with the lowest index.
+   */
+  public int mostUsedMeetingRoom(int n, int[][] meetings) {
+    Arrays.sort(meetings, Comparator.comparingInt(a -> a[0])); // Sort meetings by start time
+    int[] arr = new int[n];
+    PriorityQueue<Integer> free = new PriorityQueue<>();
+    for (int i = 0; i < n; i++) {
+      free.add(i);
+    }
+    PriorityQueue<int[]> used = new PriorityQueue<>(
+        (p, q) -> (p[1] != q[1]) ? p[1] - q[1] : p[0] - q[0]);
+    for (int[] meeting : meetings) {
+      while (!used.isEmpty() && used.peek()[1] <= meeting[0]) {
+        free.offer(used.poll()[0]); // Add freed room back to available rooms
+      }
+      if (free.isEmpty()) {
+        int[] room = used.poll();
+        used.add(new int[]{room[0], room[1] + meeting[1] - meeting[0]});
+        arr[room[0]]++;
+      } else {
+        int room = free.poll();
+        used.add(new int[]{room, meeting[1]});
+        arr[room]++;
+      }
+    }
+    int index = 0;
+    int max = 0;
+    for (int i = 0; i < n; i++) {
+      if (arr[i] > max) {
+        max = arr[i];
+        index = i;
+      }
+    }
+    return index;
   }
 
   public static int laptopRentals(List<List<Integer>> times) {

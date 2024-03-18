@@ -122,7 +122,6 @@
             <artifactId>spring-boot-test-autoconfigure</artifactId>
             <version>1.5.0.RELEASE</version>
         </dependency>
-        <!-- Jedis: Redis Java client -->
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>

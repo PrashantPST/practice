@@ -147,11 +147,10 @@ public class ArrayProblems {
     }
   }
 
-  /*
-  Sub array Sum Equals k
-  O(n) TC and SC both
+  /**
+   * A sub array Sum Equals k, O(n) TC and O(n) SC
    */
-  public int subarraySum(int[] nums, int k) {
+  public int numberOfSubArrayHavingSumK(int[] nums, int k) {
     int count = 0, sum = 0;
     Map<Integer, Integer> map = new HashMap<>();
     map.put(0, 1);
@@ -161,6 +160,44 @@ public class ArrayProblems {
         count += map.get(sum - k);
       }
       map.put(sum, map.getOrDefault(sum, 0) + 1);
+    }
+    return count;
+  }
+
+  /**
+   * Given a binary array nums and an integer goal, return the number of non-empty subarrays with a
+   * sum goal. A subarray is a contiguous part of the array.
+   * <p>
+   * Example 1: Input: nums = [1,0,1,0,1], goal = 2 Output: 4 Explanation: The 4 subarrays are
+   * bolded and underlined below: [1,0,1,0,1] [1,0,1,0,1] [1,0,1,0,1] [1,0,1,0,1]
+   * <p>
+   * Example 2: Input: nums = [0,0,0,0,0], goal = 0 Output: 15
+   * <p>
+   * Constraints: - 1 <= nums.length <= 3 * 104 - nums[i] is either 0 or 1. - 0 <= goal <=
+   * nums.length
+   */
+  public int numberOfSubArrayHavingSumKInABinaryArray(int[] nums, int k) {
+    return calc(nums, k) - calc(nums, k - 1);
+  }
+
+  public int calc(int[] nums, int goal) {
+    if (goal < 0) {
+      return 0;
+    }
+    int l = 0;
+    int r = 0;
+    int count = 0;
+    int currSum = 0;
+    while (r < nums.length) {
+      currSum += nums[r];
+      while (currSum > goal) {
+        currSum -= nums[l];
+        l++;
+      }
+      if (currSum == goal) {
+        count += r - l + 1;
+      }
+      r++;
     }
     return count;
   }
