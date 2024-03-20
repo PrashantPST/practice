@@ -1091,10 +1091,9 @@ public class Practice {
     return traversal;
   }
 
-  /*
-  return the kth largest element in the array
-  Time complexity: O(nlogk)
-  Space complexity: O(k)
+  /**
+   * return the kth largest element in the array
+   * Time complexity: O(nlogk) Space complexity: O(k)
    */
   public Optional<Integer> findKthLargest(int[] nums, int k) {
     PriorityQueue<Integer> heap = new PriorityQueue<>();
@@ -1556,9 +1555,9 @@ public class Practice {
     return result;
   }
 
-  /*
-    array of points where points[i] = [xi, yi] represents a point on the X-Y plane
-    return the k closest points to the origin (0, 0)
+  /**
+   * array of points where points[i] = [xi, yi] represents a point on the X-Y plane
+   * return the k closest points to the origin (0, 0)
    */
   public int[][] kClosestPointsToOrigin(int[][] points, int k) {
     if (k >= points.length) {
@@ -1866,11 +1865,11 @@ public class Practice {
     return ans;
   }
 
-  /*
-  combination-sum
-  Given an array of distinct integers candidates and a, return a list of all unique
-  combinations of candidates where the chosen numbers sum to target
-  The same number may be chosen from candidates an unlimited number of times
+  /**
+   * combination-sum
+   * Given an array of distinct integers candidates and a, return a list of all unique
+   * combinations of candidates where the chosen numbers sum to target
+   * The same number may be chosen from candidates an unlimited number of times
    */
   public List<List<Integer>> combinationSum(int[] candidates, int target) {
     List<List<Integer>> ans = new ArrayList<>();

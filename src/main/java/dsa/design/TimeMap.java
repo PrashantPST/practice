@@ -1,4 +1,4 @@
-package dsa;
+package dsa.design;
 
 /*
 Design a time-based key-value data structure that can store multiple values for the same key at different time stamps

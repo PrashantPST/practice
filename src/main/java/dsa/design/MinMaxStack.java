@@ -1,7 +1,7 @@
 package dsa.design;
 
 /*
-Design a stack that supports push, pop, top, and retrieving the minimum/maximum element in constant time
+ * Design a stack that supports push, pop, top, and retrieving the minimum/maximum element in constant time
  */
 
 import java.util.ArrayDeque;

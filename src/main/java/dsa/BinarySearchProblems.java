@@ -291,13 +291,13 @@ public class BinarySearchProblems {
     return t * t * x;
   }
 
-  /*
-    The guards have gone and will come back in h hours.
-    Koko likes to eat slowly but still wants to finish eating all the bananas before the guards return.
-    Return the minimum integer k (bananas-per-hour eating speed) such that she can eat all the bananas within h hours
-    Let n be the length of the input array piles and m be the maximum number of bananas in a single pile from piles
-    search space will be 1 to m
-    TC O(nlogm) SC O(1)
+  /**
+   * The guards have gone and will come back in h hours.
+   * Koko likes to eat slowly but still wants to finish eating all the bananas before the guards return.
+   * Return the minimum integer k (bananas-per-hour eating speed) such that she can eat all the bananas within h hours
+   * Let n be the length of the input array piles and m be the maximum number of bananas in a single pile from piles
+   * search space will be 1 to m
+   * TC O(nlogm) SC O(1)
    */
   public int minimumEatingSpeed(int[] piles, int h) {
     int left = 1, right = Arrays.stream(piles).max().getAsInt();

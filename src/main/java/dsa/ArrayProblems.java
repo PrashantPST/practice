@@ -73,8 +73,8 @@ public class ArrayProblems {
     return Arrays.copyOfRange(numbers, start, end + 1);
   }
 
-  /*
-  Sort an array of 0s, 1s and 2s | Sort Three Colors | Dutch National Flag problem
+  /**
+   * Sort an array of 0s, 1s and 2s | Sort Three Colors | Dutch National Flag problem
    */
   public static int[] threeNumberSort(int[] nums, int[] order) {
     int lastZero = 0;

@@ -65,9 +65,9 @@ public class LinkedList {
         return dummyHead.next;
     }
 
-    /*
-   given an array of k linked-lists, each linked-list is sorted in ascending order
-   Merge all the linked-lists into one sorted linked-list
+    /**
+     * given an array of k linked-lists, each linked-list is sorted in ascending order
+     * Merge all the linked-lists into one sorted linked-list
     */
     public LinkedList mergeKLists(LinkedList[] lists) {
         return mergeKLinkedLists(lists, 0);
