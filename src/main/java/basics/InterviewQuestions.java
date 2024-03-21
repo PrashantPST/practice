@@ -32,6 +32,9 @@ public class InterviewQuestions {
 
   public static void main(String[] args) {
 
+    int parallelism = ForkJoinPool.commonPool().getParallelism();
+    System.out.println("Default parallelism level: " + parallelism);
+
     List<String> list = Arrays.asList("Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig",
         "Grape");
     // Create a Spliterator from the list

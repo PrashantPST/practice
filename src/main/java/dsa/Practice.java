@@ -713,12 +713,21 @@ public class Practice {
     return result;
   }
 
-  public static int[] nextWarmerDay(int[] temp) {
-    int n = temp.length;
+  /**
+   * Calculates the number of days to wait until a warmer temperature is encountered for each day.
+   * If there is no future day with a warmer temperature, the corresponding value in the output
+   * array will be 0.
+   *
+   * @param temperatures An array of integers representing daily temperatures.
+   * @return An array where each element represents the number of days to wait until a warmer
+   * temperature is encountered.
+   */
+  public static int[] nextWarmerDay(int[] temperatures) {
+    int n = temperatures.length;
     int[] arr = new int[n];
     Deque<Integer> stack = new ArrayDeque<>();
     for (int i = n - 1; i >= 0; i--) {
-      while (!stack.isEmpty() && temp[i] >= temp[stack.peek()]) {
+      while (!stack.isEmpty() && temperatures[i] >= temperatures[stack.peek()]) {
         stack.pop();
       }
       arr[i] = stack.isEmpty() ? 0 : stack.peek() - i;
@@ -1092,8 +1101,7 @@ public class Practice {
   }
 
   /**
-   * return the kth largest element in the array
-   * Time complexity: O(nlogk) Space complexity: O(k)
+   * return the kth largest element in the array Time complexity: O(nlogk) Space complexity: O(k)
    */
   public Optional<Integer> findKthLargest(int[] nums, int k) {
     PriorityQueue<Integer> heap = new PriorityQueue<>();
@@ -1556,8 +1564,8 @@ public class Practice {
   }
 
   /**
-   * array of points where points[i] = [xi, yi] represents a point on the X-Y plane
-   * return the k closest points to the origin (0, 0)
+   * array of points where points[i] = [xi, yi] represents a point on the X-Y plane return the k
+   * closest points to the origin (0, 0)
    */
   public int[][] kClosestPointsToOrigin(int[][] points, int k) {
     if (k >= points.length) {
@@ -1866,10 +1874,9 @@ public class Practice {
   }
 
   /**
-   * combination-sum
-   * Given an array of distinct integers candidates and a, return a list of all unique
-   * combinations of candidates where the chosen numbers sum to target
-   * The same number may be chosen from candidates an unlimited number of times
+   * combination-sum Given an array of distinct integers candidates and a, return a list of all
+   * unique combinations of candidates where the chosen numbers sum to target The same number may be
+   * chosen from candidates an unlimited number of times
    */
   public List<List<Integer>> combinationSum(int[] candidates, int target) {
     List<List<Integer>> ans = new ArrayList<>();
@@ -2254,5 +2261,61 @@ public class Practice {
       }
     }
     return depth;
+  }
+
+  /**
+   * Generate Parentheses Given n pairs of parentheses, write a function to generate all
+   * combinations of well-formed parentheses
+   */
+  public List<String> generateParenthesis(int n) {
+    List<String> res = new ArrayList<>();
+    recurse(res, 0, 0, "", n);
+    return res;
+  }
+
+  private void recurse(List<String> res, int left, int right, String s, int n) {
+    if (s.length() == n * 2) {
+      res.add(s);
+      return;
+    }
+    if (left < n) {
+      recurse(res, left + 1, right, s + "(", n);
+    }
+    if (left > right) {
+      recurse(res, left, right + 1, s + ")", n);
+    }
+  }
+
+  /**
+   * Calculates the number of car fleets that will arrive at the destination.
+   *
+   * @param target   The destination point.
+   * @param position An array representing the positions of the cars.
+   * @param speed    An array representing the speeds of the cars.
+   * @return The number of car fleets that will arrive at the destination.
+   */
+  public int carFleet(int target, int[] position, int[] speed) {
+    int n = position.length;
+    int[][] arr = new int[n][2];
+    for (int i = 0; i < n; i++) {
+      arr[i][0] = position[i];
+      arr[i][1] = speed[i];
+    }
+    Arrays.sort(arr, comparingInt(a -> a[0]));
+    Stack<int[]> st = new Stack<>();
+    for (int i = n - 1; i >= 0; i--) {
+      int[] curr = arr[i];
+      if (st.isEmpty()) {
+        st.push(new int[]{curr[0], curr[1]});
+      } else {
+        int[] top = st.peek();
+        double topTime = (target - top[0]) / (double) top[1];
+        double currTime = (target - curr[0]) / (double) curr[1];
+        if (currTime > topTime) {
+          st.push(new int[]{curr[0], curr[1]});
+        }
+      }
+    }
+    return st.size();
   }
 }

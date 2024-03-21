@@ -1,4 +1,4 @@
-package dsa;
+package dsa.design;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
