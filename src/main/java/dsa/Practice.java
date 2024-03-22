@@ -1129,9 +1129,9 @@ public class Practice {
   /**
    * Finds the duplicate number in an array of integers.
    *
-   * <p>Given an array of integers nums containing n + 1 integers where each integer is in the range
-   * [1, n] inclusive.
-   * There is only one repeated number in nums, return this repeated number.
+   * <p>Given an array of integers nums containing n + 1 integers where each integer is in the
+   * range [1, n] inclusive. There is only one repeated number in nums, return this repeated
+   * number.
    *
    * <p>You must solve the problem without modifying the array nums and use only constant extra
    * space.
@@ -2376,5 +2376,59 @@ public class Practice {
       }
     }
     return true;
+  }
+
+  static class Elem {
+
+    char task;
+    int n;
+    int next;
+
+    public Elem(char task, int n, int next) {
+      this.task = task;
+      this.n = n;
+      this.next = next;
+    }
+  }
+
+  /**
+   * Calculates the minimum number of intervals required to complete all tasks with the given
+   * cooling time.
+   *
+   * @param tasks    Array of CPU tasks represented by letters A to Z
+   * @param coolTime Cooling time between identical tasks
+   * @return Minimum number of intervals required to complete all tasks
+   */
+  public int leastInterval(char[] tasks, int coolTime) {
+    if (coolTime == 0) {
+      return tasks.length;
+    }
+    int time = 0;
+    PriorityQueue<Elem> pq = new PriorityQueue<>((p, q) -> q.n - p.n);
+    List<Elem> pqq = new ArrayList<>();
+    Map<Character, Integer> m = new HashMap<>();
+    for (char c : tasks) {
+      m.put(c, m.getOrDefault(c, 0) + 1);
+    }
+    for (var entry : m.entrySet()) {
+      pq.add(new Elem(entry.getKey(), entry.getValue(), 0));
+    }
+    while (!pq.isEmpty()) {
+      while (!pq.isEmpty() && pq.peek().next > time) {
+        Elem e = pq.poll();
+        pqq.add(e);
+      }
+      if (!pq.isEmpty()) {
+        Elem e = pq.poll();
+        if (e.n > 1) {
+          pq.add(new Elem(e.task, e.n - 1, time + coolTime + 1));
+        }
+      }
+      while (!pqq.isEmpty()) {
+        pq.add(pqq.remove(0));
+      }
+      time++;
+    }
+    return time;
   }
 }
