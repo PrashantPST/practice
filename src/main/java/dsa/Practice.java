@@ -1125,9 +1125,24 @@ public class Practice {
     return Optional.ofNullable(heap.peek());
   }
 
-  /*
-  Time Complexity: O(n)
-  Space Complexity: O(1)
+
+  /**
+   * Finds the duplicate number in an array of integers.
+   *
+   * <p>Given an array of integers nums containing n + 1 integers where each integer is in the range
+   * [1, n] inclusive.
+   * There is only one repeated number in nums, return this repeated number.
+   *
+   * <p>You must solve the problem without modifying the array nums and use only constant extra
+   * space.
+   *
+   * <p>Example:
+   * Input: nums = [1,3,4,2,2] Output: 2
+   *
+   * <p>Constraints:
+   * - 2 <= n <= 3 * 10^4 - nums.length == n + 1 - 1 <= nums[i] <= n - All the integers in nums
+   * appear only once except for precisely one integer which appears two or more times. Time
+   * Complexity: O(n) Space Complexity: O(1)
    */
   public int findDuplicate(int[] nums) {
     // Find the intersection point of the two runners.
@@ -2317,5 +2332,49 @@ public class Practice {
       }
     }
     return st.size();
+  }
+
+
+  /**
+   * Given two strings s1 and s2, return true if s2 contains a permutation of s1, or false
+   * otherwise.
+   * <p>
+   * In other words, return true if one of s1's permutations is the substring of s2.
+   * <p>
+   * Example 1: Input: s1 = "ab", s2 = "eidbaooo" Output: true Explanation: s2 contains one
+   * permutation of s1 ("ba").
+   * <p>
+   * Example 2: Input: s1 = "ab", s2 = "eidboaoo" Output: false
+   * <p>
+   * Constraints: - 1 <= s1.length, s2.length <= 10^4 - s1 and s2 consist of lowercase English
+   * letters.
+   **/
+  public boolean checkInclusion(String s1, String s2) {
+    if (s1.length() > s2.length()) {
+      return false;
+    }
+    int[] s1map = new int[26];
+    int[] s2map = new int[26];
+    for (int i = 0; i < s1.length(); i++) {
+      s1map[s1.charAt(i) - 'a']++;
+      s2map[s2.charAt(i) - 'a']++;
+    }
+    for (int i = 0; i < s2.length() - s1.length(); i++) {
+      if (matches(s1map, s2map)) {
+        return true;
+      }
+      s2map[s2.charAt(i + s1.length()) - 'a']++;
+      s2map[s2.charAt(i) - 'a']--;
+    }
+    return matches(s1map, s2map);
+  }
+
+  private boolean matches(int[] s1map, int[] s2map) {
+    for (int i = 0; i < 26; i++) {
+      if (s1map[i] != s2map[i]) {
+        return false;
+      }
+    }
+    return true;
   }
 }

@@ -2,7 +2,6 @@ package dsa;
 
 import dsa.models.BinaryTree;
 import dsa.models.VerticalInfo;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +17,7 @@ import java.util.TreeMap;
 public class TreeProblems {
 
   private int result = Integer.MIN_VALUE;
+  private int ans;
 
   private static Map<Integer, List<Integer>> verticalOrder(BinaryTree root) {
     Map<Integer, List<Integer>> verticalView = new TreeMap<>();
@@ -286,6 +286,37 @@ public class TreeProblems {
       this.left = null;
       this.right = null;
       this.leftNodesCount = 0;
+    }
+  }
+
+  /**
+   * Given a binary tree root, a node X in the tree is named good if in the path from root to X
+   * there are no nodes with a value greater than X.
+   * <p>
+   * Return the number of good nodes in the binary tree.
+   * <p>
+   * Example: Input: root = [3,1,4,3,null,1,5] Output: 4 Explanation: Nodes in blue are good. 3 / \
+   * 1   4 /   / \ 3   1   5 There are 4 good nodes (blue nodes) in the tree.
+   * <p>
+   * Constraints: - The number of nodes in the binary tree is in the range [1, 10^5]. - Each node's
+   * value is between [-10^4, 10^4].
+   */
+  public int goodNodes(BinaryTree root) {
+    ans = 0;
+    helper(root, Integer.MIN_VALUE);
+    return ans;
+  }
+
+  public void helper(BinaryTree root, int max) {
+    if (root != null) {
+      if (root.value
+          >= max) { // if root.val > the max value of path from root of the tree to current node
+        ans++; //increment count
+      }
+      helper(root.left, Math.max(root.value,
+          max));  // updating max value of current path and traversing left to the current node
+      helper(root.right, Math.max(root.value,
+          max));  // updating max value of current path and traversing right to the current node
     }
   }
 }
