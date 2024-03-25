@@ -2,6 +2,7 @@ package dsa.test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import dsa.design.TopologicalSortBFS;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.jupiter.api.Test;

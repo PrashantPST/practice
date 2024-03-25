@@ -1,6 +1,6 @@
 package design.lld.splitwise;
 
-import design.lld.splitwise.factory.CommandFactoryV1;
+import design.lld.splitwise.factory.CommandFactory;
 import design.lld.splitwise.models.User;
 
 import java.util.Arrays;
@@ -13,7 +13,7 @@ public class Driver {
 
         ExpenseManager expenseManager = ExpenseManager.getExpenseManager();
 
-        CommandFactoryV1 commandFactory = new CommandFactoryV1();
+        CommandFactory commandFactory = new CommandFactory();
 
         expenseManager.addUser(
                 User.builder().id("u1").name("User1").email("gaurav@workat.tech").phone("9876543210").build());

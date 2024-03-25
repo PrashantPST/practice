@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class CommandFactoryV1 {
+public class CommandFactory {
     private static final Map<String, Command> commandsMap = new HashMap<>();
 
     static {

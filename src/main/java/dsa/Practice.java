@@ -2431,4 +2431,37 @@ public class Practice {
     }
     return time;
   }
+
+
+  /**
+   * Gives a hint for the Bulls and Cows game.
+   *
+   * @param secret The secret number set by the player.
+   * @param guess  The guess made by the other player.
+   * @return A hint formatted as "xAyB", where x is the number of bulls and y is the number of cows.
+   */
+  public String getHint(String secret, String guess) {
+    int nBulls = 0;
+    int nCows = 0;
+    int n = secret.length();
+    int[] n1 = new int[10];
+    int[] n2 = new int[10];
+    for (int i = 0; i < n; i++) {
+      int s = Character.getNumericValue(secret.charAt(i));
+      int g = Character.getNumericValue(guess.charAt(i));
+      if (s == g) {
+        nBulls++;
+      } else {
+        n1[s]++;
+        if (n1[s] > 0 && n1[s] <= n2[s]) {
+          nCows++;
+        }
+        n2[g]++;
+        if (n2[g] > 0 && n1[g] >= n2[g]) {
+          nCows++;
+        }
+      }
+    }
+    return nBulls + "A" + nCows + "B";
+  }
 }
