@@ -9,7 +9,6 @@ import static dsa.Util.prefixIsValid;
 import static dsa.Util.swap;
 import static java.util.Comparator.comparingInt;
 
-import dsa.models.BinaryTree;
 import dsa.models.Edge;
 import dsa.models.NestedInteger;
 import java.math.BigInteger;
@@ -1072,32 +1071,6 @@ public class Practice {
       return 0;
     }
     return (int) (negative ? -ans : ans);
-  }
-
-  public List<List<Integer>> levelOrder(BinaryTree root) {
-    Queue<BinaryTree> q = new LinkedList<>();
-    List<List<Integer>> traversal = new ArrayList<>();
-    if (root == null) {
-      return traversal;
-    }
-    int levelNodes;
-    q.add(root);
-    while (!q.isEmpty()) {
-      List<Integer> temp = new ArrayList<>();
-      levelNodes = q.size();
-      while (levelNodes-- > 0) {
-        BinaryTree current = q.remove();
-        temp.add(current.value);
-        if (current.left != null) {
-          q.add(current.left);
-        }
-        if (current.right != null) {
-          q.add(current.right);
-        }
-      }
-      traversal.add(temp);
-    }
-    return traversal;
   }
 
   /**

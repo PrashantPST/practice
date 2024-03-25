@@ -1,10 +1,12 @@
 package dsa;
 
 import dsa.models.BinaryTree;
+import dsa.models.Node;
 import dsa.models.VerticalInfo;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -307,7 +309,7 @@ public class TreeProblems {
     return ans;
   }
 
-  public void helper(BinaryTree root, int max) {
+  private void helper(BinaryTree root, int max) {
     if (root != null) {
       if (root.value
           >= max) { // if root.val > the max value of path from root of the tree to current node
@@ -318,5 +320,74 @@ public class TreeProblems {
       helper(root.right, Math.max(root.value,
           max));  // updating max value of current path and traversing right to the current node
     }
+  }
+
+  public List<List<Integer>> levelOrder(BinaryTree root) {
+    Queue<BinaryTree> q = new LinkedList<>();
+    List<List<Integer>> traversal = new ArrayList<>();
+    if (root == null) {
+      return traversal;
+    }
+    int levelNodes;
+    q.add(root);
+    while (!q.isEmpty()) {
+      List<Integer> temp = new ArrayList<>();
+      levelNodes = q.size();
+      while (levelNodes-- > 0) {
+        BinaryTree current = q.remove();
+        temp.add(current.value);
+        if (current.left != null) {
+          q.add(current.left);
+        }
+        if (current.right != null) {
+          q.add(current.right);
+        }
+      }
+      traversal.add(temp);
+    }
+    return traversal;
+  }
+
+  public List<List<Integer>> levelOrder(Node root) {
+    Deque<Node> queue = new ArrayDeque<>();
+    List<List<Integer>> result = new ArrayList<>();
+    if (root == null) {
+      return Collections.emptyList();
+    }
+    queue.add(root);
+    while (!queue.isEmpty()) {
+      List<Integer> level = new ArrayList<>();
+      for (int i = 0, size = queue.size(); i < size; i++) {
+        Node node = queue.poll();
+        assert node != null;
+        level.add(node.val);
+        queue.addAll(node.children);
+      }
+      result.add(level);
+    }
+    return result;
+  }
+
+  public List<Double> averageOfLevels(BinaryTree root) {
+    Queue<BinaryTree> q = new LinkedList<>(List.of(root));
+    List<Double> ans = new ArrayList<>();
+    double qLen, row;
+    while (q.size() > 0) {
+      qLen = q.size();
+      row = 0;
+      for (int i = 0; i < qLen; i++) {
+        BinaryTree curr = q.poll();
+        assert curr != null;
+        row += curr.value;
+        if (curr.left != null) {
+          q.offer(curr.left);
+        }
+        if (curr.right != null) {
+          q.offer(curr.right);
+        }
+      }
+      ans.add(row / qLen);
+    }
+    return ans;
   }
 }
