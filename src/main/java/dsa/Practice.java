@@ -1134,6 +1134,21 @@ public class Practice {
     return hare;
   }
 
+  public List<Integer> findDuplicates(int[] nums) {
+    List<Integer> duplicates = new ArrayList<>();
+    int n = nums.length;
+    for (int i = 0; i < n; i++) {
+      int index = nums[i] % n;
+      nums[index != 0 ? index - 1 : n - 1] += n;
+    }
+    for (int i = 0; i < n; i++) {
+      if (nums[i] / n > 1) {
+        duplicates.add(i + 1);
+      }
+    }
+    return duplicates;
+  }
+
   /*
   Next Greater Element II
   Given a circular integer array nums
