@@ -2452,4 +2452,56 @@ public class Practice {
     }
     return nBulls + "A" + nCows + "B";
   }
+
+  public int openLock(String[] deadends, String target) {
+    Queue<String> q = new ArrayDeque<>();
+    int ans = 0;
+    q.add("0000");
+    Set<String> visited = new HashSet<>();
+    Set<String> deads = new HashSet<>(Arrays.asList(deadends));
+    while (!q.isEmpty()) {
+      int size = q.size();
+      while (size-- > 0) {
+        String next = q.poll();
+        if (next.equals(target)) {
+          return ans;
+        }
+        if (visited.contains(next) || deads.contains(next)) {
+          continue;
+        }
+        visited.add(next);
+        for (int i = 0; i < next.length(); i++) {
+          int val = Character.getNumericValue(next.charAt(i));
+          q.add(next.substring(0, i) + (val + 1) % 10 + next.substring(i + 1));
+          String substring = next.substring(i + 1);
+          if (val == 0) {
+            q.add(next.substring(0, i) + 9 + substring);
+          } else {
+            q.add(next.substring(0, i) + (val - 1) % 10 + substring);
+          }
+        }
+      }
+      ans++;
+    }
+    return -1;
+  }
+
+  public int numRabbits(int[] answers) {
+    Map<Integer, Integer> m = new HashMap<>();
+    for (int answer : answers) {
+      m.merge(answer, 1, Integer::sum);
+    }
+    int ans = 0;
+    for (var entry : m.entrySet()) {
+      int key = entry.getKey();
+      int val = entry.getValue();
+      if (key == 0) {
+        ans += val;
+      } else {
+        ans += ((int) Math.ceil(val / (key + 1.0))) * (key + 1);
+      }
+    }
+    return ans;
+  }
+
 }
