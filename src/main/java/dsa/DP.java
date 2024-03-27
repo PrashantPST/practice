@@ -116,7 +116,12 @@ public class DP {
   }
 
   /**
-   * House Robber I
+   * House Robber I Calculates the maximum amount of money that can be robbed from houses along a
+   * street without alerting the police.
+   *
+   * @param nums An integer array representing the amount of money in each house.
+   * @return The maximum amount of money that can be robbed without alerting the police.
+   * @throws IllegalArgumentException if nums is null or empty.
    */
   public int robI(int[] nums) {
     return robHelper(nums, 0, nums.length - 1);

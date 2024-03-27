@@ -20,6 +20,8 @@ public class TreeProblems {
 
   private int result = Integer.MIN_VALUE;
   private int ans;
+  private int count = 0;
+  private int moves;
 
   private static Map<Integer, List<Integer>> verticalOrder(BinaryTree root) {
     Map<Integer, List<Integer>> verticalView = new TreeMap<>();
@@ -389,5 +391,40 @@ public class TreeProblems {
       ans.add(row / qLen);
     }
     return ans;
+  }
+
+  public int averageOfSubtree(BinaryTree root) {
+    rec(root);
+    return count;
+  }
+
+  public int[] rec(BinaryTree root) {
+    if (root == null) {
+      return new int[]{0, 0};
+    }
+    int[] l = rec(root.left);
+    int[] r = rec(root.right);
+    int totalVal = l[0] + r[0] + root.value;
+    int totalN = l[1] + r[1] + 1;
+    if (totalVal / totalN == root.value) {
+      count++;
+    }
+    return new int[]{totalVal, totalN};
+  }
+
+  public int distributeCoins(BinaryTree root) {
+    rec(root);
+    return moves;
+  }
+
+  public int recDistributeCoins(BinaryTree root) {
+    if (root == null) {
+      return 0;
+    }
+    int l = recDistributeCoins(root.left);
+    int r = recDistributeCoins(root.right);
+    int rem = l + r + root.value - 1;
+    moves += Math.abs(rem);
+    return rem;
   }
 }
