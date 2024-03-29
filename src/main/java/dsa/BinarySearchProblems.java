@@ -225,11 +225,16 @@ public class BinarySearchProblems {
     return -1;
   }
 
+  /**
+   * Find Peak Element I A peak element is an element that is strictly greater than its neighbors.
+   * Given a 0-indexed integer array nums, find a peak element, and return its index. If the array
+   * contains multiple peaks, return the index to any of the peaks. You may imagine that nums[-1] =
+   * nums[n] = -∞. In other words, an element is always considered to be strictly greater than a
+   * neighbor that is outside the array. nums[i] != nums[i + 1] for all valid i You must write an
+   * algorithm that runs in O(log n) time.
+   */
   public int findPeakElement(int[] nums) {
-    if (nums.length == 1) {
-      return 0;
-    }
-    if (nums[0] > nums[1]) {
+    if (nums.length == 1 || nums[0] > nums[1]) {
       return 0;
     }
     if (nums[nums.length - 1] > nums[nums.length - 2]) {
@@ -249,6 +254,46 @@ public class BinarySearchProblems {
     }
     return -1;
   }
+
+
+  /**
+   * Find a Peak Element II
+   */
+  public int[] findPeakGrid(int[][] mat) {
+    int rows = mat.length;
+    int cols = mat[0].length;
+    int l = 0;
+    int r = cols - 1;
+    while (l <= r) {
+      int mid = l + (r - l) / 2;
+      int idx = max(mat, mid);
+      if ((mid == 0 || mat[idx][mid - 1] < mat[idx][mid]) &&
+          (mid == cols - 1 || mat[idx][mid] > mat[idx][mid + 1]) &&
+          (idx == 0 || mat[idx - 1][mid] < mat[idx][mid]) &&
+          (idx == rows - 1 || mat[idx][mid] > mat[idx + 1][mid])) {
+        return new int[]{idx, mid};
+      } else if ((mid == 0 || mat[idx][mid - 1] < mat[idx][mid])
+          && (mid == cols - 1 || mat[idx][mid] < mat[idx][mid + 1])) {
+        l = mid + 1;
+      } else {
+        r = mid - 1;
+      }
+    }
+    return new int[]{-1, -1};
+  }
+
+  public int max(int[][] mat, int c) {
+    int max = -1;
+    int idx = -1;
+    for (int i = 0; i < mat.length; i++) {
+      if (mat[i][c] > max) {
+        max = mat[i][c];
+        idx = i;
+      }
+    }
+    return idx;
+  }
+
 
   public int mySqrt(int x) {
     if (x < 2) {
@@ -292,12 +337,11 @@ public class BinarySearchProblems {
   }
 
   /**
-   * The guards have gone and will come back in h hours.
-   * Koko likes to eat slowly but still wants to finish eating all the bananas before the guards return.
-   * Return the minimum integer k (bananas-per-hour eating speed) such that she can eat all the bananas within h hours
-   * Let n be the length of the input array piles and m be the maximum number of bananas in a single pile from piles
-   * search space will be 1 to m
-   * TC O(nlogm) SC O(1)
+   * The guards have gone and will come back in h hours. Koko likes to eat slowly but still wants to
+   * finish eating all the bananas before the guards return. Return the minimum integer k
+   * (bananas-per-hour eating speed) such that she can eat all the bananas within h hours Let n be
+   * the length of the input array piles and m be the maximum number of bananas in a single pile
+   * from piles search space will be 1 to m TC O(nlogm) SC O(1)
    */
   public int minimumEatingSpeed(int[] piles, int h) {
     int left = 1, right = Arrays.stream(piles).max().getAsInt();

@@ -22,8 +22,8 @@ public class LinkedList {
         return slow;
     }
 
-    /*
-   O(n) time and O(1) space, where n is the number of nodes in the LL
+    /**
+     * O(n) time and O(1) space, where n is the number of nodes in the LL
     */
     public LinkedList detectCycle(LinkedList head) {
         LinkedList tortoise = head;

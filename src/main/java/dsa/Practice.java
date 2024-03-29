@@ -11,6 +11,7 @@ import static java.util.Comparator.comparingInt;
 
 import dsa.models.Edge;
 import dsa.models.NestedInteger;
+import dsa.models.Pair;
 import java.math.BigInteger;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -2181,16 +2182,26 @@ public class Practice {
     return maxCount;
   }
 
+
+  /**
+   * Sort Characters By Frequency Given a string s, sort it in decreasing order based on the
+   * frequency of the characters. The frequency of a character is the number of times it appears in
+   * the string.
+   * <p>
+   * Return the sorted string. If there are multiple answers, return any of them.
+   */
   public String frequencySort(String s) {
     Map<Character, Integer> hm = new HashMap<>();
     s.chars().forEach(c -> hm.merge((char) c, 1, Integer::sum));
-    PriorityQueue<Map.Entry<Character, Integer>> pq = new PriorityQueue<>(
+    PriorityQueue<Pair<Character, Integer>> pq = new PriorityQueue<>(
         (a, b) -> b.getValue() - a.getValue());
-    pq.addAll(hm.entrySet());
+    for (var entry : hm.entrySet()) {
+      pq.add(new Pair<>(entry.getKey(), entry.getValue()));
+    }
     StringBuilder result = new StringBuilder();
     while (!pq.isEmpty()) {
-      Map.Entry<Character, Integer> entry = pq.poll();
-      result.append(String.valueOf(entry.getKey()).repeat(entry.getValue()));
+      Pair<Character, Integer> pair = pq.poll();
+      result.append(String.valueOf(pair.getKey()).repeat(pair.getValue()));
     }
     return result.toString();
   }
@@ -2502,6 +2513,125 @@ public class Practice {
       }
     }
     return ans;
+  }
+
+  public int minSteps(int n) {
+    return rec(n);
+  }
+
+  public int rec(int n) {
+    if (n == 1) {
+      return 0;
+    }
+    for (int i = 2; i <= Math.sqrt(n); i++) {
+      if (n % i == 0) {
+        return rec(n / i) + i;
+      }
+    }
+    return n;
+  }
+
+  public int maxSubarrayLength(int[] nums, int k) {
+    int start = 0;
+    int ans = 0;
+    Map<Integer, Integer> frequency = new HashMap<>();
+    for (int end = 0; end < nums.length; end++) {
+      int num = nums[end];
+      frequency.merge(num, 1, Integer::sum);
+      while (start <= end && frequency.getOrDefault(num, 0) > k) {
+        int n = nums[start];
+        frequency.merge(n, -1, Integer::sum);
+        start++;
+      }
+      ans = Math.max(ans, end - start + 1);
+    }
+    return ans;
+  }
+
+
+  /**
+   * Count Subarrays Where Max Element Appears at Least K Times
+   */
+  public long countSubarrays(int[] nums, int k) {
+    long ans = 0;
+    int maxElementsCount = 0;
+    int maxElement = Integer.MIN_VALUE;
+    for (int num : nums) {
+      maxElement = Math.max(maxElement, num);
+    }
+    int left = 0;
+    int right = 0;
+    int n = nums.length;
+    while (left <= right && right < n) {
+      if (nums[right] == maxElement) {
+        maxElementsCount++;
+      }
+      while (maxElementsCount >= k) {
+        ans += (n - right);
+        if (nums[left] == maxElement) {
+          maxElementsCount--;
+        }
+        left++;
+      }
+      right++;
+    }
+    return ans;
+  }
+
+  /**
+   * Given an input string s, reverse the order of the words.
+   * <p>
+   * A word is defined as a sequence of non-space characters. The words in s will be separated by at
+   * least one space.
+   * <p>
+   * Return a string of the words in reverse order concatenated by a single space.
+   * <p>
+   * Note that s may contain leading or trailing spaces or multiple spaces between two words. The
+   * returned string should only have a single space separating the words. Do not include any extra
+   * spaces.
+   **/
+  public String reverseWords(String s) {
+    // Trim the input string to remove leading and trailing spaces
+    String[] str = s.trim().split("\\s+");
+    // Initialize the output string
+    StringBuilder out = new StringBuilder();
+    // Iterate through the words in reverse order
+    for (int i = str.length - 1; i > 0; i--) {
+      // Append the current word and a space to the output
+      out.append(str[i]).append(" ");
+    }
+    // Append the first word to the output (without trailing space)
+    return out + str[0];
+  }
+
+  public int beautySum(String s) {
+    if (s.length() <= 2) {
+      return 0;
+    }
+    int[] arr = new int[26];
+    int beauty = 0;
+    for (int i = 0; i < s.length() - 2; i++) {
+      for (int j = i; j < s.length(); j++) {
+        char c = s.charAt(j);
+        arr[c - 'a']++;
+        int b = find(arr);
+        beauty += b;
+      }
+      Arrays.fill(arr, 0);
+    }
+    return beauty;
+  }
+
+  public int find(int[] a) {
+    int max = 1;
+    int min = Integer.MAX_VALUE;
+    for (int t : a) {
+      if (t != 0) {
+        max = Math.max(max, t);
+        min = Math.min(min, t);
+      }
+    }
+    return max - min;
   }
 
 }
