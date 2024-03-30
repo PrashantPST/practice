@@ -35,6 +35,12 @@ public class Practice {
 
   private static final int[][] coordinates = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};
 
+
+  /**
+   * Subsets I Given an integer array nums of unique elements, return all possible subsets (the
+   * power set). The solution set must not contain duplicate subsets. Return the solution in any
+   * order.
+   */
   public static List<List<Integer>> subsets(List<Integer> array) {
     List<List<Integer>> ans = new ArrayList<>();
     ans.add(new ArrayList<>());
@@ -48,6 +54,63 @@ public class Practice {
     }
     return ans;
   }
+
+  public List<List<Integer>> subsets(int[] nums) {
+    List<List<Integer>> ans = new ArrayList<>();
+    List<Integer> current = new ArrayList<>();
+    backtrack(ans, current, nums, 0);
+    return ans;
+  }
+
+  private void backtrack(List<List<Integer>> ans, List<Integer> current, int[] nums, int i) {
+    // base condition
+    if (i == nums.length) {
+      ans.add(new ArrayList<>(current));
+      return;
+    }
+    // pick
+    current.add(nums[i]);
+    backtrack(ans, current, nums, i + 1);
+    // backtrack
+    current.remove(current.size() - 1);
+    // not pick
+    // if there are duplicates adjacent to each other
+    while (i < nums.length - 1 && nums[i] == nums[i + 1]) {
+      i++;
+    }
+    backtrack(ans, current, nums, i + 1);
+  }
+
+
+  /**
+   * Subsets II Given an integer array nums that may contain duplicates, return all possible subsets
+   * (the power set). The solution set must not contain duplicate subsets. Return the solution in
+   * any order.
+   */
+  public List<List<Integer>> subsetsWithDup(int[] array) {
+    Arrays.sort(array);
+    List<List<Integer>> ans = new ArrayList<>();
+    ans.add(new ArrayList<>());
+    for (Integer it : array) {
+      int length = ans.size();
+      for (int i = 0; i < length; i++) {
+        List<Integer> a = new ArrayList<>(ans.get(i));
+        a.add(it);
+        if (!ans.contains(a)) {
+          ans.add(a);
+        }
+      }
+    }
+    return ans;
+  }
+
+  public List<List<Integer>> subsetsWithDupAnotherApproach(int[] array) {
+    List<List<Integer>> ans = new ArrayList<>();
+    List<Integer> current = new ArrayList<>();
+    backtrack(ans, current, array, 0);
+    return ans;
+  }
+
 
   /*
   O(n^2) tc and O(n^2) sc
@@ -2622,7 +2685,7 @@ public class Practice {
     return beauty;
   }
 
-  public int find(int[] a) {
+  private int find(int[] a) {
     int max = 1;
     int min = Integer.MAX_VALUE;
     for (int t : a) {
@@ -2632,6 +2695,46 @@ public class Practice {
       }
     }
     return max - min;
+  }
+
+
+  /**
+   * Subarrays with K Different Integers Given an integer array nums and an integer k, return the
+   * number of good subarrays of nums.
+   * <p>
+   * A good array is an array where the number of different integers in that array is exactly k.
+   * <p>
+   * For example, [1,2,3,1,2] has 3 different integers: 1, 2, and 3. A subarray is a contiguous part
+   * of an array.
+   */
+  public int subarraysWithKDistinct(int[] nums, int k) {
+    return slidingWindowAtMost(nums, k) - slidingWindowAtMost(nums, k - 1);
+  }
+
+  // Helper function to count the number of subarrays with at most k distinct elements.
+  private int slidingWindowAtMost(int[] nums, int distinctK) {
+    // To store the occurrences of each element.
+    Map<Integer, Integer> freqMap = new HashMap<>();
+    int left = 0, totalCount = 0;
+
+    // Right pointer of the sliding window iterates through the array.
+    for (int right = 0; right < nums.length; right++) {
+      freqMap.put(nums[right], freqMap.getOrDefault(nums[right], 0) + 1);
+
+      // If the number of distinct elements in the window exceeds k,
+      // we shrink the window from the left until we have at most k distinct elements.
+      while (freqMap.size() > distinctK) {
+        freqMap.put(nums[left], freqMap.get(nums[left]) - 1);
+        if (freqMap.get(nums[left]) == 0) {
+          freqMap.remove(nums[left]);
+        }
+        left++;
+      }
+
+      // Update the total count by adding the length of the current subarray.
+      totalCount += (right - left + 1);
+    }
+    return totalCount;
   }
 
 }
