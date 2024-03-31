@@ -900,10 +900,8 @@ public class Practice {
     return str.substring(longestStart, longestStart + longestLength);
   }
 
-  /*
-    Permutations I
-    time complexity of the algorithm is O(n * n!)
-    sc - O(n)
+  /**
+   * Permutations I time complexity of the algorithm is O(n * n!) sc - O(n)
    */
   public List<List<Integer>> permute(int[] numbs) {
     List<List<Integer>> results = new ArrayList<>();
@@ -911,10 +909,9 @@ public class Practice {
     return results;
   }
 
-  /*
-    Permutations II
-    Given a collection of numbers, nums, that might contain duplicates, return all possible unique permutations
-    in any order.
+  /**
+   * Permutations II Given a collection of numbers, nums, that might contain duplicates, return all
+   * possible unique permutations in any order.
    */
   public List<List<Integer>> permuteUnique(int[] numbs) {
     List<List<Integer>> results = new ArrayList<>();
@@ -1028,7 +1025,9 @@ public class Practice {
   }
 
 
-  // time complexity of O(n) and a space complexity of O(1)
+  /**
+   * Next Permutation time complexity of O(n) and a space complexity of O(1)
+   */
   public void nextPermutation(int[] nums) {
     // Step 1: Find the first decreasing element from the right
     int i = nums.length - 2;
@@ -1941,17 +1940,18 @@ public class Practice {
   }
 
   /**
-   * combination-sum Given an array of distinct integers candidates and a, return a list of all
+   * combination-sum Given an array of distinct integers candidates and a return a list of all
    * unique combinations of candidates where the chosen numbers sum to target The same number may be
    * chosen from candidates an unlimited number of times
    */
-  public List<List<Integer>> combinationSum(int[] candidates, int target) {
+  public List<List<Integer>> combinationSumI(int[] candidates, int target) {
     List<List<Integer>> ans = new ArrayList<>();
-    rec(candidates, new ArrayList<>(), target, 0, ans);
+    recCombinationSumI(candidates, new ArrayList<>(), target, 0, ans);
     return ans;
   }
 
-  private void rec(int[] candidates, List<Integer> l, int target, int i, List<List<Integer>> ans) {
+  private void recCombinationSumI(int[] candidates, List<Integer> l, int target, int i,
+      List<List<Integer>> ans) {
     if (i == candidates.length) {
       return;
     }
@@ -1962,12 +1962,112 @@ public class Practice {
     // pick
     boolean pick = candidates[i] <= target;
     if (pick) {
-      List<Integer> temp = new ArrayList<>(l);
-      temp.add(candidates[i]);
-      rec(candidates, temp, target - candidates[i], i, ans);
+      l.add(candidates[i]);
+      recCombinationSumI(candidates, l, target - candidates[i], i, ans);
+      // backtrack
+      l.remove(l.size() - 1);
     }
     // not pick
-    rec(candidates, l, target, i + 1, ans);
+    recCombinationSumI(candidates, l, target, i + 1, ans);
+  }
+
+
+  /**
+   * Combination Sum II Given a collection of candidate numbers (candidates) and a target number
+   * (target), find all unique combinations in candidates where the candidate numbers sum to target.
+   * Each number in candidates may only be used once in the combination. Note: The solution set must
+   * not contain duplicate combinations.
+   */
+  public List<List<Integer>> combinationSumII(int[] candidates, int target) {
+    Arrays.sort(candidates);
+    List<List<Integer>> ans = new ArrayList<>();
+    recCombinationSumII(candidates, new ArrayList<>(), target, 0, ans);
+    return ans;
+  }
+
+  private void recCombinationSumII(int[] candidates, List<Integer> l, int target, int i,
+      List<List<Integer>> ans) {
+    if (target == 0) {
+      ans.add(new ArrayList<>(l));
+      return;
+    }
+    if (i == candidates.length) {
+      return;
+    }
+    boolean pick = candidates[i] <= target;
+    if (pick) {
+      l.add(candidates[i]);
+      recCombinationSumII(candidates, l, target - candidates[i], i + 1, ans);
+      // backtrack
+      l.remove(l.size() - 1);
+    }
+    // not pick
+    while (i < candidates.length - 1 && candidates[i] == candidates[i + 1]) {
+      i++;
+    }
+    recCombinationSumII(candidates, l, target, i + 1, ans);
+  }
+
+
+  /**
+   * Combination Sum III Find all valid combinations of k numbers that sum up to n such that the
+   * following conditions are true: Only numbers 1 through 9 are used. Each number is used at most
+   * once. Return a list of all possible valid combinations. The list must not contain the same
+   * combination twice, and the combinations may be returned in any order.
+   */
+  public List<List<Integer>> combinationSumIII(int k, int n) {
+    List<List<Integer>> ans = new ArrayList<>();
+    recCombinationSumIII(new ArrayList<>(), n, 1, ans, k);
+    return ans;
+  }
+
+  private void recCombinationSumIII(List<Integer> l, int target, int i,
+      List<List<Integer>> ans, int k) {
+    if (target == 0 && l.size() == k) {
+      ans.add(new ArrayList<>(l));
+      return;
+    }
+    if (i > 9 || target < 0 || l.size() > k) {
+      return;
+    }
+    boolean pick = i <= target;
+    // pick
+    if (pick) {
+      l.add(i);
+      recCombinationSumIII(l, target - i, i + 1, ans, k);
+      // backtrack
+      l.remove(l.size() - 1);
+    }
+    // not pick
+    recCombinationSumIII(l, target, i + 1, ans, k);
+  }
+
+
+  /**
+   * Combination Sum IV Given an array of distinct integers nums and a target integer target, return
+   * the number of possible combinations that add up to target. The test cases are generated so that
+   * the answer can fit in a 32-bit integer.
+   */
+  public int combinationSumIV(int[] nums, int target) {
+    Map<Integer, Integer> cache = new HashMap<>();
+    return recCombinationSumIV(nums, target, cache);
+  }
+
+  public int recCombinationSumIV(int[] nums, int target, Map<Integer, Integer> cache) {
+    if (cache.containsKey(target)) {
+      return cache.get(target);
+    }
+    if (target == 0) {
+      return 1;
+    } else if (target < 0) {
+      return 0;
+    }
+    int ans = 0;
+    for (int num : nums) {
+      ans += recCombinationSumIV(nums, target - num, cache);
+    }
+    cache.put(target, ans);
+    return cache.get(target);
   }
 
   public String addTwoBinary(String a, String b) {
@@ -2720,7 +2820,6 @@ public class Practice {
     // Right pointer of the sliding window iterates through the array.
     for (int right = 0; right < nums.length; right++) {
       freqMap.put(nums[right], freqMap.getOrDefault(nums[right], 0) + 1);
-
       // If the number of distinct elements in the window exceeds k,
       // we shrink the window from the left until we have at most k distinct elements.
       while (freqMap.size() > distinctK) {
@@ -2730,11 +2829,9 @@ public class Practice {
         }
         left++;
       }
-
       // Update the total count by adding the length of the current subarray.
       totalCount += (right - left + 1);
     }
     return totalCount;
   }
-
 }
