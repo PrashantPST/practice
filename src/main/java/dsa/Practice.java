@@ -142,6 +142,31 @@ public class Practice {
     return dp[i][j];
   }
 
+
+  /**
+   * Palindrome Partitioning Given a string s, partition s such that every substring of the
+   * partition is a palindrome . Return all possible palindrome partitioning of s.
+   */
+  public List<List<String>> partition(String s) {
+    List<List<String>> ans = new ArrayList<>();
+    recPartition(ans, new ArrayList<>(), s, 0);
+    return ans;
+  }
+
+  private void recPartition(List<List<String>> ans, List<String> curr, String s, int i) {
+    if (i >= s.length()) {
+      ans.add(new ArrayList<>(curr));
+      return;
+    }
+    for (int j = i; j < s.length(); j++) {
+      if (Util.isPalindrome(s, i, j)) {
+        curr.add(s.substring(i, j + 1));
+        recPartition(ans, curr, s, j + 1);
+        curr.remove(curr.size() - 1);
+      }
+    }
+  }
+
   /*
   Time Complexity : O(n) Space : O(1)
    */
@@ -2741,6 +2766,38 @@ public class Practice {
     return ans;
   }
 
+
+  /**
+   * Count Subarrays With Fixed Bounds You are given an integer array nums and two integers minK and
+   * maxK. A fixed-bound subarray of nums is a subarray that satisfies the following conditions: The
+   * minimum value in the subarray is equal to minK. The maximum value in the subarray is equal to
+   * maxK. Return the number of fixed-bound subarrays. A subarray is a contiguous part of an array.
+   */
+  public long countSubarrays(int[] nums, int minK, int maxK) {
+    int badIndex = -1;
+    int minIndex = -1;
+    int maxIndex = -1;
+    long ans = 0;
+    for (int i = 0; i < nums.length; i++) {
+      if (nums[i] < minK || maxK < nums[i]) {
+        minIndex = -1;
+        maxIndex = -1;
+        badIndex = i;
+        continue;
+      }
+      if (nums[i] == minK) {
+        minIndex = i;
+      }
+      if (nums[i] == maxK) {
+        maxIndex = i;
+      }
+      if (minIndex != -1 && maxIndex != -1) {
+        ans += Math.min(minIndex, maxIndex) - badIndex;
+      }
+    }
+    return ans;
+  }
+
   /**
    * Given an input string s, reverse the order of the words.
    * <p>
@@ -2800,12 +2857,9 @@ public class Practice {
 
   /**
    * Subarrays with K Different Integers Given an integer array nums and an integer k, return the
-   * number of good subarrays of nums.
-   * <p>
-   * A good array is an array where the number of different integers in that array is exactly k.
-   * <p>
-   * For example, [1,2,3,1,2] has 3 different integers: 1, 2, and 3. A subarray is a contiguous part
-   * of an array.
+   * number of good subarrays of nums. A good array is an array where the number of different
+   * integers in that array is exactly k. For example, [1,2,3,1,2] has 3 different integers: 1, 2,
+   * and 3. A subarray is a contiguous part of an array.
    */
   public int subarraysWithKDistinct(int[] nums, int k) {
     return slidingWindowAtMost(nums, k) - slidingWindowAtMost(nums, k - 1);
@@ -2833,5 +2887,80 @@ public class Practice {
       totalCount += (right - left + 1);
     }
     return totalCount;
+  }
+
+
+  /**
+   * Count Good Numbers A digit string is good if the digits (0-indexed) at even indices are even
+   * and the digits at odd indices are prime (2, 3, 5, or 7). For example, "2582" is good because
+   * the digits (2 and 8) at even positions are even and the digits (5 and 2) at odd positions are
+   * prime. However, "3245" is not good because 3 is at an even index but is not even. Given an
+   * integer n, return the total number of good digit strings of length n. Since the answer may be
+   * large, return it modulo 109 + 7. A digit string is a string consisting of digits 0 through 9
+   * that may contain leading zeros.
+   */
+  public int countGoodNumbers(long n) {
+    long mod = 1000000007L;
+    long div = n / 2L;
+    long t = Util.powerMod(20L, div, mod);
+    if (n % 2L == 0) {
+      return (int) t;
+    }
+    return (int) ((t * 5) % mod);
+  }
+
+
+  /**
+   * Given two strings s and t, determine if they are isomorphic. Two strings s and t are isomorphic
+   * if the characters in s can be replaced to get t. All occurrences of a character must be
+   * replaced with another character while preserving the order of characters. No two characters may
+   * map to the same character, but a character may map to itself.
+   */
+  public boolean isIsomorphic(String s, String t) {
+    int[] m1 = new int[256];
+    int[] m2 = new int[256];
+    Arrays.fill(m1, -1);
+    Arrays.fill(m2, -1);
+    int n = s.length();
+    for (int i = 0; i < n; i++) {
+      if (m1[s.charAt(i)] != m2[t.charAt(i)]) {
+        return false;
+      }
+      m1[s.charAt(i)] = i;
+      m2[t.charAt(i)] = i;
+    }
+    return true;
+  }
+
+
+  /**
+   * Letter Combinations of a Phone Number Given a string containing digits from 2-9 inclusive,
+   * return all possible letter combinations that the number could represent. Return the answer in
+   * any order. A mapping of digits to letters (just like on the telephone buttons) is given below.
+   * Note that 1 does not map to any letters.
+   */
+  public List<String> letterCombinations(String digits) {
+    List<String> ans = new ArrayList<>();
+    if (digits.isEmpty()) {
+      return ans;
+    }
+    ans.add("");
+    String[] s = new String[]{
+        "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"
+    };
+    for (int i = 0; i < digits.length(); i++) {
+      ans = combine(s[digits.charAt(i) - '0'], ans);
+    }
+    return ans;
+  }
+
+  private List<String> combine(String s, List<String> t) {
+    List<String> res = new ArrayList<>();
+    for (String ss : t) {
+      for (int i = 0; i < s.length(); i++) {
+        res.add(ss + s.charAt(i));
+      }
+    }
+    return res;
   }
 }

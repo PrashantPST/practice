@@ -33,6 +33,7 @@ public class Util {
     numbs[i] = numbs[j];
     numbs[j] = temp;
   }
+
   public static void reverse(int[] numbs, int start, int end) {
     while (start < end) {
       swap(numbs, start, end);
@@ -177,5 +178,18 @@ public class Util {
 
   public static int calculateManhattanDistance(int[] pointA, int[] pointB) {
     return Math.abs(pointA[0] - pointB[0]) + Math.abs(pointA[1] - pointB[1]);
+  }
+
+  public static long powerMod(long base, long exponent, long modulus) {
+    long result = 1;
+    base %= modulus;
+    while (exponent > 0) {
+      if (exponent % 2 == 1) {
+        result = (result * base) % modulus;
+      }
+      exponent >>= 1;
+      base = (base * base) % modulus;
+    }
+    return result;
   }
 }
