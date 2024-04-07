@@ -2,7 +2,6 @@ package dsa;
 
 import static dsa.Util.EAST;
 import static dsa.Util.calculateManhattanDistance;
-import static dsa.Util.helper;
 import static dsa.Util.inversionCount;
 import static dsa.Util.mergeSort;
 import static dsa.Util.prefixIsValid;
@@ -547,8 +546,14 @@ public class Practice {
     return max_length;
   }
 
-  /*
-      TC - O(n) and SC - O(n) where n is the length of the input string
+  /**
+   * Minimum Remove to Make Valid Parentheses TC - O(n) and SC - O(n) where n is the length of the
+   * input string Given a string s of '(' , ')' and lowercase English characters. Your task is to
+   * remove the minimum number of parentheses ( '(' or ')', in any positions ) so that the resulting
+   * parentheses string is valid and return any valid string. Formally, a parentheses string is
+   * valid if and only if: It is the empty string, contains only lowercase characters, or It can be
+   * written as AB (A concatenated with B), where A and B are valid strings, or It can be written as
+   * (A), where A is a valid string.
    */
   public static String minRemoveToMakeValid(String s) {
     Set<Integer> indexesToRemove = new HashSet<>();
@@ -824,20 +829,6 @@ public class Practice {
     return arr;
   }
 
-  public static int[] findNextGreaterElements(int[] nums) {
-    int n = nums.length;
-    int[] result = new int[n];
-    Deque<Integer> stack = new ArrayDeque<>();
-    for (int i = n - 1; i >= 0; i--) {
-      while (!stack.isEmpty() && stack.peek() <= nums[i]) {
-        stack.pop();
-      }
-      result[i] = stack.isEmpty() ? -1 : stack.peek();
-      stack.push(nums[i]);
-    }
-    return result;
-  }
-
   /*
   TC - O(NlogK) SC - O(K)
    */
@@ -901,9 +892,10 @@ public class Practice {
     return res;
   }
 
-  /*
-    find the longest substring without repeating characters
-    O(n) TC O(n) SC
+  /**
+   * Longest Substring Without Repeating Characters Given a string s, find the length of the longest
+   * substring without repeating characters. find the longest substring without repeating characters
+   * O(n) TC O(n) SC
    */
   public static String longestSubstringWithoutRepeatingCharacters(String str) {
     int longestLength = 0;
@@ -915,14 +907,31 @@ public class Practice {
       if (map.containsKey(ch) && map.get(ch) >= start) {
         start = map.get(ch) + 1;
       }
-      int currentLength = i - start + 1;
       map.put(ch, i);
+      int currentLength = i - start + 1;
       if (currentLength > longestLength) {
         longestStart = start;
         longestLength = currentLength;
       }
     }
     return str.substring(longestStart, longestStart + longestLength);
+  }
+
+  public int longestSubstringWithoutRepeatingCharactersWithRecursion(String s) {
+    int max = 0;
+    for (int i = 0; i < s.length(); i++) {
+      max = Math.max(max, helper(s, i, new HashSet<>(), 0));
+    }
+    return max;
+  }
+
+  private static int helper(String s, int i, HashSet<Character> set, int count) {
+    if (i == s.length() || set.contains(s.charAt(i))) {
+      return count;
+    } else {
+      set.add(s.charAt(i));
+      return helper(s, i + 1, set, count + 1);
+    }
   }
 
   /**
@@ -1237,16 +1246,14 @@ public class Practice {
     return duplicates;
   }
 
-  /*
-  Next Greater Element II
-  Given a circular integer array nums
-  return the next greater number for every element in nums.
-  The next greater number of a number x is the first greater number to its traversing-order next in
-  the array, which means you could search circularly to find its next greater number.
-  If it doesn't exist, return -1 for this number.
+  /**
+   * Next Greater Element II Given a circular integer array nums return the next greater number for
+   * every element in nums. The next greater number of a number x is the first greater number to its
+   * traversing-order next in the array, which means you could search circularly to find its next
+   * greater number. If it doesn't exist, return -1 for this number.
    */
   public int[] nextGreaterElement(int[] nums) {
-    Stack<Integer> stack = new Stack<>();
+    Deque<Integer> stack = new ArrayDeque<>();
     int[] ans = new int[nums.length];
     Arrays.fill(ans, -1);
     int i = nums.length - 1;
@@ -1266,6 +1273,20 @@ public class Practice {
       }
     }
     return ans;
+  }
+
+  public static int[] findNextGreaterElements(int[] nums) {
+    int n = nums.length;
+    int[] result = new int[n];
+    Deque<Integer> stack = new ArrayDeque<>();
+    for (int i = n - 1; i >= 0; i--) {
+      while (!stack.isEmpty() && nums[i] >= stack.peek()) {
+        stack.pop();
+      }
+      result[i] = stack.isEmpty() ? -1 : stack.peek();
+      stack.push(nums[i]);
+    }
+    return result;
   }
 
   /**
@@ -1350,28 +1371,11 @@ public class Practice {
     return ans;
   }
 
-  public int longestSubstringWithoutRepeatingCharactersWithRecursion(String s) {
-    int max = 0;
-    for (int i = 0; i < s.length(); i++) {
-      max = Math.max(max, helper(s, i, new HashSet<>(), 0));
-    }
-    return max;
-  }
-
   public boolean isValidPartition(int[] numbers) {
     int n = numbers.length;
     Map<Integer, Boolean> memo = new HashMap<>();
     memo.put(-1, true);
     return prefixIsValid(numbers, n - 1, memo);
-  }
-
-  /*
-  Given an m x n board of characters and a list of strings words, return all words on the board.
-  Each word must be constructed from letters of sequentially adjacent cells,
-  where adjacent cells are horizontally or vertically neighboring
-   */
-  public List<String> findWords(char[][] board, String[] words) {
-    return null;
   }
 
   public boolean isValidSudoku(char[][] board) {
@@ -1464,8 +1468,13 @@ public class Practice {
     return stack.peek();
   }
 
-  /*
-  -1000 <= asteroids[i] <= 1000 asteroids[i] != 0
+  /**
+   * Asteroid Collision We are given an array asteroids of integers representing asteroids in a row.
+   * For each asteroid, the absolute value represents its size, and the sign represents its
+   * direction (positive meaning right, negative meaning left). Each asteroid moves at the same
+   * speed. Find out the state of the asteroids after all collisions. If two asteroids meet, the
+   * smaller one will explode. If both are the same size, both will explode. Two asteroids moving in
+   * the same direction will never meet.
    */
   public int[] collidingAsteroids(int[] asteroids) {
     Stack<Integer> st = new Stack<>();
@@ -2862,11 +2871,12 @@ public class Practice {
    * and 3. A subarray is a contiguous part of an array.
    */
   public int subarraysWithKDistinct(int[] nums, int k) {
-    return slidingWindowAtMost(nums, k) - slidingWindowAtMost(nums, k - 1);
+    return slidingWindowAtMostKDistinctCharacters(nums, k) - slidingWindowAtMostKDistinctCharacters(
+        nums, k - 1);
   }
 
   // Helper function to count the number of subarrays with at most k distinct elements.
-  private int slidingWindowAtMost(int[] nums, int distinctK) {
+  private int slidingWindowAtMostKDistinctCharacters(int[] nums, int distinctK) {
     // To store the occurrences of each element.
     Map<Integer, Integer> freqMap = new HashMap<>();
     int left = 0, totalCount = 0;
@@ -2962,5 +2972,167 @@ public class Practice {
       }
     }
     return res;
+  }
+
+  public int lengthOfLastWord(String s) {
+    int length = 0;
+    // We are looking for the last word so let's go backward
+    for (int i = s.length() - 1; i >= 0; i--) {
+      if (s.charAt(i) != ' ') { // a letter is found so count
+        length++;
+      } else {  // it's a white space instead
+        //  Did we already started to count a word ? Yes so we found the last word
+        if (length > 0) {
+          return length;
+        }
+      }
+    }
+    return length;
+  }
+
+
+  /**
+   * Expression Add Operators Given a string num that contains only digits and an integer target,
+   * return all possibilities to insert the binary operators '+', '-', and/or '*' between the digits
+   * of num so that the resultant expression evaluates to the target value. Note that operands in
+   * the returned expressions should not contain leading zeros.
+   */
+  public List<String> addOperators(String num, int target) {
+    List<String> ans = new ArrayList<>();
+    backtrack(ans, "", 0, 0, target, num, 0);
+    return ans;
+  }
+
+  private void backtrack(List<String> res, String currExpr, long prev, long currValue,
+      int target, String num, int i) {
+    if (i == num.length()) {
+      if (currValue == target) {
+        res.add(currExpr);
+      }
+      return;
+    }
+    for (int j = i; j < num.length(); j++) {
+      String s = num.substring(i, j + 1);
+      long val = Long.parseLong(s);
+      if (s.startsWith("0") && s.length() != 1) {
+        continue;
+      }
+      if (i == 0) {
+        backtrack(res, s, val, val, target, num, j + 1);
+      } else {
+        backtrack(res, currExpr + "+" + s, +val, currValue + val, target, num, j + 1);
+        backtrack(res, currExpr + "-" + s, -val, currValue - val, target, num, j + 1);
+        backtrack(res, currExpr + "*" + s, prev * val, currValue - prev + (prev * val), target, num,
+            j + 1);
+      }
+    }
+  }
+
+
+  /**
+   * Word Search I Given an m x n grid of characters board and a string word, return true if word
+   * exists in the grid. The word can be constructed from letters of sequentially adjacent cells,
+   * where adjacent cells are horizontally or vertically neighboring. The same letter cell may not
+   * be used more than once.
+   */
+  public boolean exist(char[][] board, String word) {
+    int m = board.length;
+    int n = board[0].length;
+    for (int i = 0; i < m; i++) {
+      for (int j = 0; j < n; j++) {
+        if (rec(i, j, 0, word, board)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Word Search II Given an m x n board of characters and a list of strings words, return all words
+   * on the board. Each word must be constructed from letters of sequentially adjacent cells, where
+   * adjacent cells are horizontally or vertically neighboring
+   */
+  public List<String> findWords(char[][] board, String[] words) {
+  }
+
+  private boolean rec(int i, int j, int k, String word, char[][] board) {
+    if (k == word.length()) {
+      return true;
+    }
+    if (!valid(i, j, board) || board[i][j] != word.charAt(k)) {
+      return false;
+    }
+    char currentChar = board[i][j];
+    for (int[] dir : coordinates) {
+      board[i][j] = '#';
+      if (rec(i + dir[0], j + dir[1], k + 1, word, board)) {
+        return true;
+      }
+      board[i][j] = currentChar;
+    }
+    return false;
+  }
+
+  private boolean valid(int i, int j, char[][] board) {
+    return (i >= 0 && i < board.length && j >= 0 && j < board[0].length && board[i][j] != '#');
+  }
+
+  /**
+   *
+   */
+  public int maxDepth(String s) {
+    int ans = 0;
+    int currentDepth = 0;
+    for (int i = 0; i < s.length(); i++) {
+      if (s.charAt(i) == '(') {
+        currentDepth++;
+      } else if (s.charAt(i) == ')') {
+        currentDepth--;
+      }
+      ans = Math.max(ans, currentDepth);
+    }
+    return ans;
+  }
+
+  public String makeGood(String s) {
+    Stack<Character> st = new Stack<>();
+    StringBuilder sb = new StringBuilder();
+    int i = 0;
+    while (i < s.length()) {
+      if (!st.isEmpty() && Math.abs(st.peek() - s.charAt(i)) == 32) {
+        st.pop();
+      } else {
+        st.push(s.charAt(i));
+      }
+      i++;
+    }
+    while (!st.isEmpty()) {
+      sb.append(st.pop());
+    }
+    return sb.reverse().toString();
+  }
+
+
+  /**
+   * Minimum Number of Swaps to Make the String Balanced You are given a 0-indexed string s of even
+   * length n. The string consists of exactly n / 2 opening brackets '[' and n / 2 closing brackets
+   * ']'. A string is called balanced if and only if: It is the empty string, or It can be written
+   * as AB, where both A and B are balanced strings, or It can be written as [C], where C is a
+   * balanced string. You may swap the brackets at any two indices any number of times. Return the
+   * minimum number of swaps to make s balanced.
+   */
+  public int minSwaps(String s) {
+    int extraClosingBrackets = 0;
+    int maxExtraClosingBrackets = 0;
+    for (char ch : s.toCharArray()) {
+      if (ch == '[') {
+        extraClosingBrackets -= 1;
+      } else {
+        extraClosingBrackets += 1;
+      }
+      maxExtraClosingBrackets = Math.max(maxExtraClosingBrackets, extraClosingBrackets);
+    }
+    return (maxExtraClosingBrackets + 1) / 2;
   }
 }

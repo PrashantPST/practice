@@ -4,7 +4,6 @@ import dsa.models.Interval;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -104,15 +103,6 @@ public class Util {
       aux[k++] = (num1 <= num2) ? arr[i++] : arr[j++];
     }
     System.arraycopy(aux, 0, arr, low, arr.length);
-  }
-
-  public static int helper(String s, int i, HashSet<Character> set, int count) {
-    if (i == s.length() || set.contains(s.charAt(i))) {
-      return count;
-    } else {
-      set.add(s.charAt(i));
-      return helper(s, i + 1, set, count + 1);
-    }
   }
 
   // Returns true if the intervals a and b have a common element.
