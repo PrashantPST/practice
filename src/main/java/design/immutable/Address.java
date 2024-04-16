@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class Address {
-    private final String country;
-    private final String city;
+
+  private final String country;
+  private final String city;
 }

@@ -316,9 +316,9 @@ public class DP {
 
 
   /**
-   * Minimum Path Sum Given an m x n grid filled with non-negative numbers, find a path from top left
-   * to bottom right, which minimizes the sum of all numbers along its path. Note: You can only move
-   * either down or right at any point in time.
+   * Minimum Path Sum Given an m x n grid filled with non-negative numbers, find a path from top
+   * left to bottom right, which minimizes the sum of all numbers along its path. Note: You can only
+   * move either down or right at any point in time.
    */
   public int minPathSum(int[][] grid) {
     int m = grid.length;
@@ -335,5 +335,22 @@ public class DP {
       }
     }
     return grid[m - 1][n - 1];
+  }
+
+  /**
+   * Maximal Rectangle Given a rows x cols binary matrix filled with 0's and 1's, find the largest
+   * rectangle containing only 1's and return its area.
+   */
+  public int maximalRectangle(char[][] matrix) {
+    return 0;
+  }
+
+
+  /**
+   * Maximal Square Given an m x n binary matrix filled with 0's and 1's, find the largest square
+   * containing only 1's and return its area.
+   */
+  public int maximalSquare(char[][] matrix) {
+    return 0;
   }
 }

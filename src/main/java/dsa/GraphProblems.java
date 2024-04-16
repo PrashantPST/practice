@@ -181,7 +181,7 @@ public class GraphProblems {
     return maxArea;
   }
 
-  public int maxAreaOfIsland(int[][] grid, int r, int c) {
+  private int maxAreaOfIsland(int[][] grid, int r, int c) {
     if (r < 0 || c < 0 ||
         r == grid.length ||
         c == grid[0].length ||

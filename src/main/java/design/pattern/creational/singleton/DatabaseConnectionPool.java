@@ -31,6 +31,7 @@ public class DatabaseConnectionPool {
     if (instance == null) {
       // t1, t2, t3, t4, t5
       synchronized (DatabaseConnectionPool.class) {
+
         // t1
         if (instance == null) { // double checking
           instance = new DatabaseConnectionPool();

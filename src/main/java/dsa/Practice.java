@@ -291,11 +291,10 @@ public class Practice {
     return sequence;
   }
 
-  /*
-  Jump Game
-  You are initially positioned at the array's first index, and each element in the array represents
-  your maximum jump length at that position
-  Return true if you can reach the last index, or false otherwise.
+  /**
+   * Jump Game I You are initially positioned at the array's first index, and each element in the
+   * array represents your maximum jump length at that position Return true if you can reach the
+   * last index, or false otherwise.
    */
   public static boolean canJump(int[] nums) {
     int maxReachable = 0;
@@ -308,11 +307,10 @@ public class Practice {
     return true;
   }
 
-  /*
-  Jump Game II
-  You are initially positioned at nums[0].
-  Each element nums[i] represents the maximum length of a forward jump from index i.
-  Return the minimum number of jumps to reach nums[n - 1]
+  /**
+   * Jump Game II You are initially positioned at nums[0]. Each element nums[i] represents the
+   * maximum length of a forward jump from index i. Return the minimum number of jumps to reach
+   * nums[n - 1]
    */
   public static int minNumberOfJumps(int[] nums) {
     final int size = nums.length;
@@ -1319,11 +1317,10 @@ public class Practice {
     return Arrays.stream(aux).max().getAsInt();
   }
 
-  /*
-    Given n non-negative integers representing an elevation map where the width of each bar is 1,
-    compute how much water it can trap after raining.
-    Approach I: O(n) TC and SC
-    Approach II: O(n) TC and O(1) SC
+  /**
+   * Given n non-negative integers representing an elevation map where the width of each bar is 1,
+   * compute how much water it can trap after raining. Approach I: O(n) TC and SC Approach II: O(n)
+   * TC and O(1) SC
    */
   public int trap(int[] height) {
         /*
@@ -1961,6 +1958,10 @@ public class Practice {
     return sortedString.toString();
   }
 
+
+  /**
+   * Time Needed to Buy Tickets
+   */
   public int timeRequiredToBuy(int[] tickets, int k) {
     int ans = 0;
     for (int i = 0; i < tickets.length; i++) {
@@ -3040,7 +3041,7 @@ public class Practice {
     int n = board[0].length;
     for (int i = 0; i < m; i++) {
       for (int j = 0; j < n; j++) {
-        if (rec(i, j, 0, word, board)) {
+        if (recWordSearchI(i, j, 0, word, board)) {
           return true;
         }
       }
@@ -3054,9 +3055,10 @@ public class Practice {
    * adjacent cells are horizontally or vertically neighboring
    */
   public List<String> findWords(char[][] board, String[] words) {
+    return null;
   }
 
-  private boolean rec(int i, int j, int k, String word, char[][] board) {
+  private boolean recWordSearchI(int i, int j, int k, String word, char[][] board) {
     if (k == word.length()) {
       return true;
     }
@@ -3066,7 +3068,7 @@ public class Practice {
     char currentChar = board[i][j];
     for (int[] dir : coordinates) {
       board[i][j] = '#';
-      if (rec(i + dir[0], j + dir[1], k + 1, word, board)) {
+      if (recWordSearchI(i + dir[0], j + dir[1], k + 1, word, board)) {
         return true;
       }
       board[i][j] = currentChar;
@@ -3134,5 +3136,150 @@ public class Practice {
       maxExtraClosingBrackets = Math.max(maxExtraClosingBrackets, extraClosingBrackets);
     }
     return (maxExtraClosingBrackets + 1) / 2;
+  }
+
+
+  /**
+   * Valid Parenthesis String Given a string s containing only three types of characters: '(', ')'
+   * and '*', return true if s is valid. The following rules define a valid string: Any left
+   * parenthesis '(' must have a corresponding right parenthesis ')'. Any right parenthesis ')' must
+   * have a corresponding left parenthesis '('. Left parenthesis '(' must go before the
+   * corresponding right parenthesis ')'. '*' could be treated as a single right parenthesis ')' or
+   * a single left parenthesis '(' or an empty string "".
+   */
+  // Approach I
+  public boolean checkValidString(String s) {
+    int[][] cache = new int[s.length()][s.length()];
+    for (int[] arr : cache) {
+      Arrays.fill(arr, -1);
+    }
+    return recCheckValidString(s, 0, 0, cache);
+  }
+
+  // Approach II
+  public boolean checkValidStringUsingTwoStacks(String s) {
+    Deque<Integer> stack1 = new ArrayDeque<>();
+    Deque<Integer> stack2 = new ArrayDeque<>();
+    for (int i = 0; i < s.length(); i++) {
+      char currentChar = s.charAt(i);
+      if (currentChar == '(') {
+        stack1.push(i);
+      } else if (currentChar == '*') {
+        stack2.push(i);
+      } else {
+        if (!stack1.isEmpty()) {
+          stack1.pop();
+        } else if (!stack2.isEmpty()) {
+          stack2.pop();
+        } else {
+          return false;
+        }
+      }
+    }
+    while (!stack1.isEmpty()) {
+      if (stack2.isEmpty() || stack2.pop() < stack1.pop()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // Approach III
+  public boolean checkValidStringWithoutExtraSpace(String s) {
+    int openBrackets = 0;
+    int closeBrackets = 0;
+    for (int i = 0; i < s.length(); i++) {
+      char openCh = s.charAt(i);
+      char closeCh = s.charAt(s.length() - i - 1);
+      if (openCh == '(' || openCh == '*') {
+        openBrackets++;
+      } else {
+        openBrackets--;
+      }
+      if (closeCh == ')' || closeCh == '*') {
+        closeBrackets++;
+      } else {
+        closeBrackets--;
+      }
+      if (openBrackets < 0 || closeBrackets < 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private boolean recCheckValidString(String s, int i, int n, int[][] cache) {
+    if (i == s.length()) {
+      return n == 0;
+    }
+    if (n < 0) {
+      return false;
+    }
+    if (s.charAt(i) == '(') {
+      return recCheckValidString(s, i + 1, n + 1, cache);
+    } else if (s.charAt(i) == ')') {
+      return recCheckValidString(s, i + 1, n - 1, cache);
+    }
+    if (cache[i][n] != -1) {
+      return cache[i][n] == 1;
+    }
+    boolean res =
+        recCheckValidString(s, i + 1, n + 1, cache) || recCheckValidString(s, i + 1, n - 1, cache)
+            ||
+            recCheckValidString(s, i + 1, n, cache);
+    cache[i][n] = (res ? 1 : 0);
+    return res;
+  }
+
+  public int[] deckRevealedIncreasing(int[] deck) {
+    int n = deck.length;
+    int[] ans = new int[n];
+    Arrays.sort(deck);
+    int i = 0;
+    int itr = 1;
+    int start = 0;
+    while (i < n) {
+      while (itr < 1 || ans[start] != 0) {
+        if (ans[start] == 0) {
+          itr++;
+        }
+        start = (start + 1) % n;
+      }
+      itr = 0;
+      ans[start] = deck[i++];
+      start = (start + 1) % n;
+    }
+    return ans;
+  }
+
+
+  /**
+   * Remove K Digits Given string num representing a non-negative integer num, and an integer k,
+   * return the smallest possible integer after removing k digits from num.
+   */
+  public String removeKDigits(String num, int k) {
+    StringBuilder sb = new StringBuilder();
+    Deque<String> stack = new ArrayDeque<>();
+    for (int i = 0; i < num.length(); i++) {
+      while (k > 0 && !stack.isEmpty() &&
+          Integer.parseInt(stack.peek()) > Integer.parseInt(String.valueOf(num.charAt(i)))) {
+        stack.pop();
+        k--;
+      }
+      stack.push(String.valueOf(num.charAt(i)));
+    }
+    while (k-- > 0 && !stack.isEmpty()) {
+      stack.pop();
+    }
+    while (!stack.isEmpty()) {
+      sb.append(stack.pop());
+    }
+    sb.reverse();
+    int index = 0;
+    while (index < sb.length() && sb.charAt(index) == '0') {
+      index++;
+    }
+    sb.delete(0, index);
+    return sb.length() == 0 ? "0" : sb.toString();
   }
 }

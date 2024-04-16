@@ -8,92 +8,81 @@ import lombok.Getter;
 @Getter
 public class Game {
 
-  private final int boardSize;
-  private final Map<String, Character> board = new HashMap<>();
-  private final Map<String, Integer> rowCounters = new HashMap<>();
-  private final Map<String, Integer> colCounters = new HashMap<>();
-  private final Map<String, Integer> diagonalCounters = new HashMap<>();
-  private final Map<String, Integer> reverseDiagonalCounters = new HashMap<>();
-  private final int WIN_CONDITION;
-  private char currentPlayer = 'X'; // Starting player
-  private int totalMoves = 0; // Track the number of moves
+  private final Map<String, Character> board;
+  private final Map<String, Integer> rowCounts;
+  private final Map<String, Integer> colCounts;
+  private final Map<String, Integer> diagonalCounts;
+  private final Map<String, Integer> revDiagonalCounts;
+  private final int dimension;
+  private char currentPlayer = 'X';
+  private int totalMoves;
 
-  public Game(int boardSize) {
-    this.boardSize = boardSize;
-    this.WIN_CONDITION = boardSize;
-  }
-
-  public boolean isMoveValid(int row, int col) {
-    if (row <= 0 || row > boardSize || col <= 0 || col > boardSize) {
-      return false; // Move is outside the board's range
-    }
-    String cellKey = row + ":" + col;
-    return !board.containsKey(cellKey); // Move is valid if the cell is not already occupied
-  }
-
-  public boolean makeMove(int row, int col) {
-    if (!isMoveValid(row, col)) {
-      System.out.println("Invalid move. Please try again.");
-      return false;
-    }
-
-    String cellKey = row + ":" + col;
-    board.put(cellKey, currentPlayer);
-    totalMoves++;
-
-    if (updateCountersAndCheckWin(row, col, currentPlayer)) {
-      System.out.println("Player " + currentPlayer + " wins!");
-      return true;
-    }
-
-    if (totalMoves == boardSize * boardSize) {
-      System.out.println("Game over! It's a draw!");
-      return true;
-    }
-    switchPlayer();
-    return false;
-  }
-
-  private boolean updateCountersAndCheckWin(int row, int col, char player) {
-    String rowKey = "row" + row + player;
-    String colKey = "col" + col + player;
-    String mainDiagonalKey = row == col ? "mainDiagonal" + player : null;
-    String reverseDiagonalKey = row == boardSize - col - 1 ? "reverseDiagonal" + player : null;
-
-    rowCounters.merge(rowKey, 1, Integer::sum);
-    colCounters.merge(colKey, 1, Integer::sum);
-
-    if (rowCounters.get(rowKey) == WIN_CONDITION || colCounters.get(colKey) == WIN_CONDITION) {
-      return true;
-    }
-
-    if (mainDiagonalKey != null) {
-      diagonalCounters.merge(mainDiagonalKey, 1, Integer::sum);
-      if (diagonalCounters.get(mainDiagonalKey) == WIN_CONDITION) {
-        return true;
-      }
-    }
-    if (reverseDiagonalKey != null) {
-      reverseDiagonalCounters.merge(reverseDiagonalKey, 1, Integer::sum);
-      return reverseDiagonalCounters.get(reverseDiagonalKey) == WIN_CONDITION;
-    }
-    return false;
-  }
-
-
-  private void switchPlayer() {
-    currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+  public Game(int i) {
+    this.rowCounts = new HashMap<>();
+    this.colCounts = new HashMap<>();
+    this.diagonalCounts = new HashMap<>();
+    this.revDiagonalCounts = new HashMap<>();
+    this.board = new HashMap<>();
+    this.dimension = i;
+    totalMoves = 0;
   }
 
   public void printBoard() {
-    for (int row = 1; row <= boardSize; row++) {
-      for (int col = 1; col <= boardSize; col++) {
-        String cellKey = row + ":" + col;
-        char mark = board.getOrDefault(cellKey, '.');
-        System.out.print(mark + " ");
+    for (int i = 1; i <= dimension; i++) {
+      for (int j = 1; j <= dimension; j++) {
+        String key = i + ":" + j;
+        if (board.get(key) == null) {
+          System.out.print(" . ");
+        } else {
+          System.out.print(board.get(key) + " ");
+        }
       }
       System.out.println();
     }
   }
-}
 
+  public boolean isMoveValid(int row, int col, int size) {
+    return row >= 1 && row <= size && col >= 1 && col <= size;
+  }
+
+  public boolean makeMove(int row, int col) {
+    board.put(row + ":" + col, currentPlayer);
+    String rowKey = row + ":" + currentPlayer;
+    String colKey = col + ":" + currentPlayer;
+    totalMoves++;
+    rowCounts.merge(rowKey, 1, Integer::sum);
+    colCounts.merge(colKey, 1, Integer::sum);
+    if (rowCounts.get(rowKey) == dimension) {
+      System.out.println(currentPlayer + " Wins");
+      return true;
+    }
+    if (colCounts.get(colKey) == dimension) {
+      System.out.println(currentPlayer +  " Wins");
+      return true;
+    }
+    if (row == col) {
+      diagonalCounts.merge(String.valueOf(currentPlayer), 1, Integer::sum);
+      if (diagonalCounts.get(String.valueOf(currentPlayer)) == dimension) {
+        System.out.println(currentPlayer + " Wins");
+        return true;
+      }
+    }
+    if (row + col == dimension + 1) {
+      revDiagonalCounts.merge(String.valueOf(currentPlayer), 1, Integer::sum);
+      if (revDiagonalCounts.get(String.valueOf(currentPlayer)) == dimension) {
+        System.out.println(currentPlayer + " Wins");
+        return true;
+      }
+    }
+    if (totalMoves == dimension * dimension) {
+      System.out.println("Its a draw!");
+      return true;
+    }
+    this.currentPlayer = currentPlayer == 'X' ? 'O' : 'X';
+    System.out.println("rowCounts = "+this.rowCounts);
+    System.out.println("colCounts = "+this.colCounts);
+    System.out.println("diagonalCounts = "+this.diagonalCounts);
+    System.out.println("revDiagonalCounts = "+this.revDiagonalCounts);
+    return false;
+  }
+}

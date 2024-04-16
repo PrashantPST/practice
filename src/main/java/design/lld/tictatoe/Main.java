@@ -3,9 +3,11 @@ package design.lld.tictatoe;
 import java.util.Scanner;
 
 public class Main {
+
   public static void main(String[] args) {
     Scanner scanner = new Scanner(System.in);
-    GameV2 game = new GameV2( 3); // Example board size
+    int size = scanner.nextInt();
+    Game game = new Game(size); // Example board size
 
     while (true) {
       game.printBoard();
@@ -26,7 +28,7 @@ public class Main {
       int row = scanner.nextInt();
       int col = scanner.nextInt();
 
-      if (game.isMoveValid(row, col)) {
+      if (game.isMoveValid(row, col, size)) {
         if (game.makeMove(row, col)) {
           game.printBoard();
           break;

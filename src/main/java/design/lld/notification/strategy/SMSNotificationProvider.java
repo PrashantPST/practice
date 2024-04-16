@@ -20,7 +20,7 @@ public class SMSNotificationProvider implements NotificationProvider {
     @Override
     public void sendNotification(Notification notification) {
         final SmsFormat smsFormat = notification.getMessage().getSmsFormat();
-        thirdPartySmsSender.sendSms(smsFormat.getBody(), notification.getTo().getPhone());
+        thirdPartySmsSender.sendSms(smsFormat.getBody(), notification.getTo().getMobileNumber());
         IThirdPartySmsSender tpSmsSender = thirdPartySmsSenderPickerStrategy.pick(smsSenders, notification);
     }
 

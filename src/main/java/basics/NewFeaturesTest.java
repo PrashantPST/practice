@@ -16,9 +16,8 @@ import org.junit.jupiter.api.Assertions;
 
 public class NewFeaturesTest {
 
-  /*
-    Lambda Expressions
-    Streams API
+  /**
+   * Lambda Expressions Streams API
    */
   @Test
   public void testFilterNames() {

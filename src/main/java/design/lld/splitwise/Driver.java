@@ -16,13 +16,13 @@ public class Driver {
         CommandFactory commandFactory = new CommandFactory();
 
         expenseManager.addUser(
-                User.builder().id("u1").name("User1").email("gaurav@workat.tech").phone("9876543210").build());
+                User.builder().id("u1").name("User1").email("gaurav@workat.tech").mobileNumber("9876543210").build());
         expenseManager.addUser(
-                User.builder().id("u2").name("User2").email("sagar@workat.tech").phone("9876543210").build());
+                User.builder().id("u2").name("User2").email("sagar@workat.tech").mobileNumber("9876543210").build());
         expenseManager.addUser(
-                User.builder().id("u3").name("User3").email("hi@workat.tech").phone("9876543210").build());
+                User.builder().id("u3").name("User3").email("hi@workat.tech").mobileNumber("9876543210").build());
         expenseManager.addUser(
-                User.builder().id("u4").name("User4").email("mock-interviews@workat.tech").phone("9876543210").build());
+                User.builder().id("u4").name("User4").email("mock-interviews@workat.tech").mobileNumber("9876543210").build());
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
