@@ -342,7 +342,35 @@ public class DP {
    * rectangle containing only 1's and return its area.
    */
   public int maximalRectangle(char[][] matrix) {
-    return 0;
+    int m = matrix.length;
+    int n = matrix[0].length;
+    int ans = 0;
+    int[][] dp = new int[m][n];
+    for (int row = 0; row < m; row++) {
+      if (matrix[row][n - 1] == '1') {
+        ans = 1;
+        dp[row][n - 1] = 1;
+      }
+    }
+    for (int col = 0; col < n; col++) {
+      if (matrix[m - 1][col] == '1') {
+        ans = 1;
+        dp[m - 1][col] = 1;
+      }
+    }
+    for (int row = m - 2; row >= 0; row--) {
+      for (int col = n - 2; col >= 0; col--) {
+        if (matrix[row][col] == '0') {
+          dp[row][col] = 0;
+        } else {
+          if (matrix[row + 1][col + 1] == '0') {
+
+          }
+        }
+        ans = Math.max(ans, -1);
+      }
+    }
+    return ans;
   }
 
 
@@ -351,6 +379,33 @@ public class DP {
    * containing only 1's and return its area.
    */
   public int maximalSquare(char[][] matrix) {
-    return 0;
+    int m = matrix.length;
+    int n = matrix[0].length;
+    int ans = 0;
+    int[][] dp = new int[m][n];
+    for (int row = 0; row < m; row++) {
+      if (matrix[row][n - 1] == '1') {
+        ans = 1;
+        dp[row][n - 1] = 1;
+      }
+    }
+    for (int col = 0; col < n; col++) {
+      if (matrix[m - 1][col] == '1') {
+        ans = 1;
+        dp[m - 1][col] = 1;
+      }
+    }
+    for (int row = m - 2; row >= 0; row--) {
+      for (int col = n - 2; col >= 0; col--) {
+        if (matrix[row][col] == '0') {
+          dp[row][col] = 0;
+        } else {
+          dp[row][col] = 1 + Math.min(dp[row + 1][col], Math.min(dp[row][col + 1],
+              dp[row + 1][col + 1]));
+        }
+        ans = Math.max(ans, dp[row][col] * dp[row][col]);
+      }
+    }
+    return ans;
   }
 }

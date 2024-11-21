@@ -5,6 +5,12 @@ import java.util.PriorityQueue;
 
 public class MedianFinder {
 
+
+    /**
+     * •	For median, we use two heaps:
+     * 	•	A max heap for the lower half of numbers.
+     * 	•	A min heap for the upper half of numbers.
+     */
     public final PriorityQueue<Integer> max;
     public final PriorityQueue<Integer> min;
 
@@ -22,6 +28,7 @@ public class MedianFinder {
         } else {
             min.add(num);
         }
+        // Re-balance heaps if needed
         if (max.size() > 1 + min.size()) {
             min.add(max.poll());
         } else if (min.size() > 1 + max.size()) {
@@ -29,6 +36,10 @@ public class MedianFinder {
         }
     }
 
+    /**
+     * 	•	Time Complexity:  O(1)
+     * 	•	Space Complexity:  O(1)
+     */
     public double findMedian() {
         if (max.size() == min.size()) {
             return (double) (max.peek() + min.peek()) / 2;
